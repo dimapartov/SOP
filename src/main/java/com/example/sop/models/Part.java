@@ -21,6 +21,9 @@ public class Part extends IdCreatedModified {
     private List<OrderItem> orderItems;
 
 
+    protected Part() {}
+
+
     @Column(name = "name", nullable = false)
     public String getName() {
         return name;

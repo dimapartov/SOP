@@ -18,6 +18,9 @@ public class Order extends IdCreatedModified {
     private List<OrderItem> orderItems;
 
 
+    protected Order() {}
+
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "employee_id",referencedColumnName = "id", nullable = false)
     public Employee getEmployee() {

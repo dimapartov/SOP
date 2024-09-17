@@ -13,6 +13,9 @@ public class OrderItem extends IdCreatedModified {
     private int quantity;
 
 
+    protected OrderItem() {}
+
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id",referencedColumnName = "id", nullable = false)
     public Order getOrder() {

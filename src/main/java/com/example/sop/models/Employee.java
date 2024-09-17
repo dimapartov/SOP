@@ -17,6 +17,9 @@ public class Employee extends IdCreatedModified {
     private List<Order> orders;
 
 
+    protected Employee() {}
+
+
     @Column(name = "first_name", nullable = false)
     public String getFirstName() {
         return firstName;
