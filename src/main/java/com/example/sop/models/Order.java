@@ -22,7 +22,7 @@ public class Order extends IdCreatedModified {
 
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "employee_id",referencedColumnName = "id", nullable = false)
+    @JoinColumn(name = "employee_id", referencedColumnName = "id", nullable = false)
     public Employee getEmployee() {
         return employee;
     }
@@ -38,7 +38,7 @@ public class Order extends IdCreatedModified {
     }
 
     @Enumerated
-    @Column(name = "orderStatus", nullable = false)
+    @Column(name = "order_status", nullable = false)
     public OrderStatusEnum getOrderStatus() {
         return orderStatus;
     }
