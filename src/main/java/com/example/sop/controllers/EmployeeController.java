@@ -26,7 +26,7 @@ public class EmployeeController {
     }
 
 
-    @PostMapping
+    @PostMapping("/createEmployee")
     public EntityModel<EmployeeDTO> createEmployee(@RequestBody EmployeeDTO createEmployeeDTO) {
         EmployeeDTO createdEmployee = employeeService.createEmployee(createEmployeeDTO);
         return EntityModel.of(createdEmployee,
@@ -34,7 +34,7 @@ public class EmployeeController {
                 WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(EmployeeController.class).getAllEmployees()).withRel("employees"));
     }
 
-    @GetMapping
+    @GetMapping("/getAllEmployees")
     public CollectionModel<EntityModel<EmployeeDTO>> getAllEmployees() {
         List<EntityModel<EmployeeDTO>> allEmployees = employeeService.getAllEmployees()
                 .stream()

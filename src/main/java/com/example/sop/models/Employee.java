@@ -19,6 +19,14 @@ public class Employee extends IdCreatedModified {
 
     protected Employee() {}
 
+    // To be deleted after tests
+    public Employee(String firstName, String lastName, String email, String phoneNumber) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+    }
+
 
     @Column(name = "first_name", nullable = false)
     public String getFirstName() {
