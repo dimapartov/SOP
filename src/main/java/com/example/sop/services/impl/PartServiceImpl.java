@@ -36,8 +36,8 @@ public class PartServiceImpl implements PartService {
     }
 
     @Override
-    public PartDTO updatePart(PartDTO partDTO) {
-        Optional<Part> targetPart = partRepository.findById(partDTO.getId());
+    public PartDTO updatePart(UUID id, PartDTO partDTO) {
+        Optional<Part> targetPart = partRepository.findById(id);
         if (targetPart.isEmpty()) {
             throw new RuntimeException("Part not found");
         }

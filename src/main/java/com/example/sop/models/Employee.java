@@ -19,14 +19,6 @@ public class Employee extends IdCreatedModified {
 
     protected Employee() {}
 
-    // To be deleted after tests
-    public Employee(String firstName, String lastName, String email, String phoneNumber) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-        this.phoneNumber = phoneNumber;
-    }
-
 
     @Column(name = "first_name", nullable = false)
     public String getFirstName() {
@@ -48,7 +40,7 @@ public class Employee extends IdCreatedModified {
         return phoneNumber;
     }
 
-    @OneToMany(mappedBy = "employee")
+    @OneToMany(mappedBy = "employee", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     public List<Order> getOrders() {
         return orders;
     }

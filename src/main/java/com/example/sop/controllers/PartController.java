@@ -1,5 +1,6 @@
 package com.example.sop.controllers;
 
+/*
 import com.example.sop.services.PartService;
 import com.example.sop.services.dtos.PartDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,7 +40,7 @@ public class PartController {
     @PutMapping("/update/{id}")
     public ResponseEntity<EntityModel<PartDTO>> updatePart(@PathVariable UUID id, @RequestBody PartDTO partDTO) {
         partDTO.setId(id);
-        PartDTO updatedPart = partService.updatePart(partDTO);
+        PartDTO updatedPart = partService.updatePart(partDTO.getId(),partDTO);
         EntityModel<PartDTO> resource = EntityModel.of(updatedPart);
         resource.add(linkTo(methodOn(PartController.class).getPartById(id)).withSelfRel());
         resource.add(linkTo(methodOn(PartController.class).getAllParts()).withRel("all-parts"));
@@ -78,4 +79,4 @@ public class PartController {
         partService.deletePartById(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
-}
+}*/

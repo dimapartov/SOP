@@ -1,10 +1,7 @@
 package com.example.sop.models;
 
 import com.example.sop.models.base.IdCreatedModified;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -40,7 +37,7 @@ public class Part extends IdCreatedModified {
         return price;
     }
 
-    @OneToMany(mappedBy = "part")
+    @OneToMany(mappedBy = "part", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     public List<OrderItem> getOrderItems() {
         return orderItems;
     }

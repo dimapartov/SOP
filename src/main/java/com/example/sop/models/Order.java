@@ -37,13 +37,13 @@ public class Order extends IdCreatedModified {
         return customerEmail;
     }
 
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     @Column(name = "order_status", nullable = false)
     public OrderStatusEnum getOrderStatus() {
         return orderStatus;
     }
 
-    @OneToMany(mappedBy = "order")
+    @OneToMany(mappedBy = "order", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     public List<OrderItem> getOrderItems() {
         return orderItems;
     }
