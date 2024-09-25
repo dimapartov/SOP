@@ -33,10 +33,10 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public OrderDTO createOrder(OrderDTO orderDTO) {
-        Order order = modelMapper.map(orderDTO, Order.class);
         Employee employee = employeeRepository.findById(orderDTO.getEmployeeId()).get();
+        Order order = modelMapper.map(orderDTO, Order.class);
         order.setEmployee(employee);
-        Order savedOrder = orderRepository.save(order);
+        Order savedOrder = orderRepository.saveAndFlush(order);
         return modelMapper.map(savedOrder, OrderDTO.class);
     }
 

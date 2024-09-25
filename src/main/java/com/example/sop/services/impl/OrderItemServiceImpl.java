@@ -31,8 +31,8 @@ public class OrderItemServiceImpl implements OrderItemService {
 
     @Override
     public OrderItemDTO createOrderItem(OrderItemDTO orderItemDTO) {
-        OrderItem orderItem = modelMapper.map(orderItemDTO, OrderItem.class);
         Order order = orderRepository.findById(orderItemDTO.getOrderId()).get();
+        OrderItem orderItem = modelMapper.map(orderItemDTO, OrderItem.class);
         orderItem.setOrder(order);
         orderItemRepository.saveAndFlush(orderItem);
         return modelMapper.map(orderItem, OrderItemDTO.class);
