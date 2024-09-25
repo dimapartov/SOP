@@ -22,11 +22,13 @@ public class PartServiceImpl implements PartService {
     private ModelMapper modelMapper;
     private PartRepository partRepository;
 
+
     @Autowired
     public PartServiceImpl(ModelMapper modelMapper, PartRepository partRepository) {
         this.modelMapper = modelMapper;
         this.partRepository = partRepository;
     }
+
 
     @Override
     public PartDTO createPart(PartDTO partDTO) {
@@ -36,14 +38,12 @@ public class PartServiceImpl implements PartService {
     }
 
     @Override
-    public PartDTO updatePart(UUID id, PartDTO partDTO) {
+    public PartDTO changeQuantityOnStorage(UUID id, int newQuantityOnStorage) {
         Optional<Part> targetPart = partRepository.findById(id);
         if (targetPart.isEmpty()) {
             throw new RuntimeException("Part not found");
         }
-        targetPart.get().setName(partDTO.getName());
-        targetPart.get().setQuantityOnStorage(partDTO.getQuantityOnStorage());
-        targetPart.get().setPrice(partDTO.getPrice());
+        targetPart.get().setQuantityOnStorage(newQuantityOnStorage);
         partRepository.saveAndFlush(targetPart.get());
         return modelMapper.map(targetPart, PartDTO.class);
     }

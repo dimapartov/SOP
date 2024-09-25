@@ -9,7 +9,7 @@ import java.util.UUID;
 public interface PartService {
 
     PartDTO createPart(PartDTO partDTO);
-    PartDTO updatePart(UUID id, PartDTO partDTO);
+    PartDTO changeQuantityOnStorage(UUID id, int newQuantityOnStorage);
     PartDTO getPartById(UUID id);
     List<PartDTO> getAllParts();
     void deletePartById(UUID id);
