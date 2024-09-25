@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -31,21 +32,21 @@ public class EmployeeController {
         EmployeeDTO createdEmployee = employeeService.createEmployee(createEmployeeDTO);
         return EntityModel.of(createdEmployee,
                 WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(EmployeeController.class).getEmployeeById(createdEmployee.getId())).withSelfRel(),
-                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(EmployeeController.class).getAllEmployees()).withRel("employees"));
+                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(EmployeeController.class).getAllEmployees()).withRel("allEmployees"));
     }
 
-    // Fix double link
     @GetMapping("/all")
-    public CollectionModel<EntityModel<EmployeeDTO>> getAllEmployees() {
+    public ResponseEntity<CollectionModel<EntityModel<EmployeeDTO>>> getAllEmployees() {
         List<EntityModel<EmployeeDTO>> allEmployees = employeeService.getAllEmployees()
                 .stream()
                 .map(employee -> EntityModel.of(employee,
                         WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(EmployeeController.class).getEmployeeById(employee.getId())).withSelfRel(),
-                        WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(EmployeeController.class).getAllEmployees()).withRel("employees")))
+                        WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(EmployeeController.class).deleteEmployeeById(employee.getId())).withRel("deleteEmployee")))
                 .collect(Collectors.toList());
 
-        return CollectionModel.of(allEmployees,
-                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(EmployeeController.class).getAllEmployees()).withSelfRel());
+        CollectionModel<EntityModel<EmployeeDTO>> employeeCollectionModel = CollectionModel.of(allEmployees);
+
+        return ResponseEntity.ok(employeeCollectionModel);
     }
 
     @GetMapping("/{id}")
@@ -53,7 +54,13 @@ public class EmployeeController {
         EmployeeDTO employeeById = employeeService.getEmployeeById(id);
         return EntityModel.of(employeeById,
                 WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(EmployeeController.class).getEmployeeById(id)).withSelfRel(),
-                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(EmployeeController.class).getAllEmployees()).withRel("employees"));
+                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(EmployeeController.class).getAllEmployees()).withRel("allEmployees"));
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Void> deleteEmployeeById(@PathVariable UUID id) {
+        employeeService.deleteEmployeeById(id);
+        return ResponseEntity.noContent().build();
     }
 
 
