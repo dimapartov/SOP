@@ -58,8 +58,8 @@ public class EmployeeController {
         EmployeeDTO employeeById = employeeService.getEmployeeById(id);
 
         EntityModel<EmployeeDTO> employeeByIdEntityModel = EntityModel.of(employeeById,
-                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(EmployeeController.class).deleteEmployeeById(id)).withRel("deleteEmployee"),
                 WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(EmployeeController.class).getEmployeeById(id)).withSelfRel(),
+                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(EmployeeController.class).deleteEmployeeById(id)).withRel("deleteEmployee"),
                 WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(EmployeeController.class).getAllEmployees()).withRel("allEmployees"));
 
         return ResponseEntity.ok(employeeByIdEntityModel);
@@ -68,8 +68,8 @@ public class EmployeeController {
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> deleteEmployeeById(@PathVariable UUID id) {
         employeeService.deleteEmployeeById(id);
+
         return ResponseEntity.noContent().build();
     }
-
 
 }

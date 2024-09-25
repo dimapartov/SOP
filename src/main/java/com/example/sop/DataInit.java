@@ -42,6 +42,10 @@ public class DataInit implements CommandLineRunner {
         PartDTO part1 = new PartDTO("Exhaust", 25, BigDecimal.valueOf(122));
         Part part1ToBeSaved = modelMapper.map(part1, Part.class);
         partRepository.saveAndFlush(part1ToBeSaved);
+
+        PartDTO part2 = new PartDTO("Wheel", 123, BigDecimal.valueOf(545345));
+        Part part2ToBeSaved = modelMapper.map(part2, Part.class);
+        partRepository.saveAndFlush(part2ToBeSaved);
     }
 
 }
