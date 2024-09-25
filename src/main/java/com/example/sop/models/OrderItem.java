@@ -22,7 +22,7 @@ public class OrderItem extends IdCreatedModified {
         return order;
     }
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "part_id", referencedColumnName = "id", nullable = false)
     public Part getPart() {
         return part;

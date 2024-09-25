@@ -43,7 +43,7 @@ public class Order extends IdCreatedModified {
         return orderStatus;
     }
 
-    @OneToMany(mappedBy = "order", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "order", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     public List<OrderItem> getOrderItems() {
         return orderItems;
     }

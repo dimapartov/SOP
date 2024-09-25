@@ -1,3 +1,4 @@
+/*
 package com.example.sop.services.interfaces;
 
 import com.example.sop.services.dtos.OrderItemDTO;
@@ -12,4 +13,4 @@ public interface OrderItemService {
     List<OrderItemDTO> getAllOrderItemsByOrderId(UUID orderId);
     void deleteOrderItemById(UUID id);
 
-}
+}*/

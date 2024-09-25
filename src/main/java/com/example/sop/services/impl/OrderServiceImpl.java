@@ -1,3 +1,4 @@
+/*
 package com.example.sop.services.impl;
 
 import com.example.sop.enums.OrderStatusEnum;
@@ -76,4 +77,4 @@ public class OrderServiceImpl implements OrderService {
                 .orElseThrow(() -> new RuntimeException("Order not found"));
         orderRepository.delete(order);
     }
-}
+}*/
