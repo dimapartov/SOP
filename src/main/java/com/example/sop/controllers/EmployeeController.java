@@ -1,7 +1,7 @@
 package com.example.sop.controllers;
 
-import com.example.sop.services.interfaces.EmployeeService;
 import com.example.sop.services.dtos.EmployeeDTO;
+import com.example.sop.services.interfaces.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
