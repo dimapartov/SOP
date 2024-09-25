@@ -60,4 +60,14 @@ public class OrderItemDTO {
         this.quantity = quantity;
     }
 
+    @Override
+    public String toString() {
+        return "OrderItemDTO{" +
+                "id=" + id +
+                ", orderId=" + orderId +
+                ", part=" + part +
+                ", quantity=" + quantity +
+                '}';
+    }
+
 }

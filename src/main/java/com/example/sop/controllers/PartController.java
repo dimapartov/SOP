@@ -1,6 +1,6 @@
 package com.example.sop.controllers;
 
-import com.example.sop.services.PartService;
+import com.example.sop.services.interfaces.PartService;
 import com.example.sop.services.dtos.PartDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;

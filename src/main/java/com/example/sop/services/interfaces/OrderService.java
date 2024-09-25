@@ -1,4 +1,4 @@
-package com.example.sop.services;
+package com.example.sop.services.interfaces;
 
 import com.example.sop.services.dtos.OrderDTO;
 
@@ -9,9 +9,10 @@ import java.util.UUID;
 public interface OrderService {
 
     OrderDTO createOrder(OrderDTO orderDTO);
-    OrderDTO updateOrder(UUID id, OrderDTO orderDTO);
-    OrderDTO getOrderById(UUID id);
     List<OrderDTO> getAllOrders();
+    OrderDTO updateOrderStatus(UUID id, String newStatus);
+    OrderDTO getOrderById(UUID id);
     void deleteOrder(UUID id);
+
 
 }

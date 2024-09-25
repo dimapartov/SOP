@@ -14,10 +14,10 @@ public class OrderDTO {
     private String customerName;
     private String customerEmail;
     private OrderStatusEnum orderStatus;
-    private List<OrderItem> orderItems;
+    private List<OrderItemDTO> orderItems;
 
 
-    public OrderDTO(UUID id, UUID employeeId, String customerName, String customerEmail, OrderStatusEnum orderStatus, List<OrderItem> orderItems) {
+    public OrderDTO(UUID id, UUID employeeId, String customerName, String customerEmail, OrderStatusEnum orderStatus, List<OrderItemDTO> orderItems) {
         this.id = id;
         this.employeeId = employeeId;
         this.customerName = customerName;
@@ -26,7 +26,7 @@ public class OrderDTO {
         this.orderItems = orderItems;
     }
 
-    public OrderDTO(UUID employeeId, String customerName, String customerEmail, OrderStatusEnum orderStatus, List<OrderItem> orderItems) {
+    public OrderDTO(UUID employeeId, String customerName, String customerEmail, OrderStatusEnum orderStatus, List<OrderItemDTO> orderItems) {
         this.employeeId = employeeId;
         this.customerName = customerName;
         this.customerEmail = customerEmail;
@@ -64,7 +64,7 @@ public class OrderDTO {
         return orderStatus;
     }
 
-    public List<OrderItem> getOrderItems() {
+    public List<OrderItemDTO> getOrderItems() {
         return orderItems;
     }
 
@@ -89,8 +89,20 @@ public class OrderDTO {
         this.orderStatus = orderStatus;
     }
 
-    public void setOrderItems(List<OrderItem> orderItems) {
+    public void setOrderItems(List<OrderItemDTO> orderItems) {
         this.orderItems = orderItems;
+    }
+
+    @Override
+    public String toString() {
+        return "OrderDTO{" +
+                "id=" + id +
+                ", employeeId=" + employeeId +
+                ", customerName='" + customerName + '\'' +
+                ", customerEmail='" + customerEmail + '\'' +
+                ", orderStatus=" + orderStatus +
+                ", orderItems=" + orderItems +
+                '}';
     }
 
 }

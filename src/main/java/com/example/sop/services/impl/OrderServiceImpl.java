@@ -1,10 +1,11 @@
 package com.example.sop.services.impl;
 
+import com.example.sop.enums.OrderStatusEnum;
 import com.example.sop.models.Employee;
 import com.example.sop.models.Order;
 import com.example.sop.repositories.EmployeeRepository;
 import com.example.sop.repositories.OrderRepository;
-import com.example.sop.services.OrderService;
+import com.example.sop.services.interfaces.OrderService;
 import com.example.sop.services.dtos.OrderDTO;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,23 +38,28 @@ public class OrderServiceImpl implements OrderService {
         Order order = modelMapper.map(orderDTO, Order.class);
         order.setEmployee(employee);
         Order savedOrder = orderRepository.saveAndFlush(order);
-        return modelMapper.map(savedOrder, OrderDTO.class);
+        OrderDTO newOrderDTO = modelMapper.map(savedOrder, OrderDTO.class);
+        newOrderDTO.setEmployeeId(savedOrder.getEmployee().getId());
+        return newOrderDTO;
     }
 
     @Override
-    public OrderDTO updateOrder(UUID id, OrderDTO orderDTO) {
+    public OrderDTO updateOrderStatus(UUID id, String newStatus) {
         Order existingOrder = orderRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Order not found"));
-        modelMapper.map(orderDTO, existingOrder);
-        Order updatedOrder = orderRepository.save(existingOrder);
-        return modelMapper.map(updatedOrder, OrderDTO.class);
+        OrderStatusEnum newOrderStatusEnum = OrderStatusEnum.valueOf(newStatus.toUpperCase());
+        existingOrder.setOrderStatus(newOrderStatusEnum);
+        Order savedOrder = orderRepository.saveAndFlush(existingOrder);
+        return modelMapper.map(savedOrder, OrderDTO.class);
     }
 
     @Override
     public OrderDTO getOrderById(UUID id) {
         Order order = orderRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Order not found"));
-        return modelMapper.map(order, OrderDTO.class);
+        OrderDTO orderDTO = modelMapper.map(order, OrderDTO.class);
+        orderDTO.setEmployeeId(order.getEmployee().getId());
+        return orderDTO;
     }
 
     @Override

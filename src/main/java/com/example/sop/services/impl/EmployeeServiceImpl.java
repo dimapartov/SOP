@@ -2,7 +2,7 @@ package com.example.sop.services.impl;
 
 import com.example.sop.models.Employee;
 import com.example.sop.repositories.EmployeeRepository;
-import com.example.sop.services.EmployeeService;
+import com.example.sop.services.interfaces.EmployeeService;
 import com.example.sop.services.dtos.EmployeeDTO;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;

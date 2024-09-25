@@ -1,4 +1,4 @@
-package com.example.sop.services;
+package com.example.sop.services.interfaces;
 
 import com.example.sop.services.dtos.PartDTO;
 
