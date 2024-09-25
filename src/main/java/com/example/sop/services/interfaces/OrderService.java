@@ -1,4 +1,3 @@
-/*
 package com.example.sop.services.interfaces;
 
 import com.example.sop.services.dtos.OrderDTO;
@@ -13,7 +12,6 @@ public interface OrderService {
     List<OrderDTO> getAllOrders();
     OrderDTO updateOrderStatus(UUID id, String newStatus);
     OrderDTO getOrderById(UUID id);
-    void deleteOrder(UUID id);
+    void deleteOrderById(UUID id);
 
-
-}*/
+}

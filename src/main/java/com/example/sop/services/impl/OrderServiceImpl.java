@@ -1,4 +1,3 @@
-/*
 package com.example.sop.services.impl;
 
 import com.example.sop.enums.OrderStatusEnum;
@@ -13,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -35,46 +35,42 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public OrderDTO createOrder(OrderDTO orderDTO) {
-        Employee employee = employeeRepository.findById(orderDTO.getEmployeeId()).get();
         Order order = modelMapper.map(orderDTO, Order.class);
-        order.setEmployee(employee);
-        Order savedOrder = orderRepository.saveAndFlush(order);
-        OrderDTO newOrderDTO = modelMapper.map(savedOrder, OrderDTO.class);
-        newOrderDTO.setEmployeeId(savedOrder.getEmployee().getId());
-        return newOrderDTO;
-    }
-
-    @Override
-    public OrderDTO updateOrderStatus(UUID id, String newStatus) {
-        Order existingOrder = orderRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Order not found"));
-        OrderStatusEnum newOrderStatusEnum = OrderStatusEnum.valueOf(newStatus.toUpperCase());
-        existingOrder.setOrderStatus(newOrderStatusEnum);
-        Order savedOrder = orderRepository.saveAndFlush(existingOrder);
-        return modelMapper.map(savedOrder, OrderDTO.class);
-    }
-
-    @Override
-    public OrderDTO getOrderById(UUID id) {
-        Order order = orderRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Order not found"));
-        OrderDTO orderDTO = modelMapper.map(order, OrderDTO.class);
-        orderDTO.setEmployeeId(order.getEmployee().getId());
-        return orderDTO;
+        orderRepository.save(order);
+        return modelMapper.map(order, OrderDTO.class);
     }
 
     @Override
     public List<OrderDTO> getAllOrders() {
-        List<Order> orders = orderRepository.findAll();
-        return orders.stream()
+        List<Order> allOrders = orderRepository.findAll();
+        return allOrders.stream()
                 .map(order -> modelMapper.map(order, OrderDTO.class))
                 .collect(Collectors.toList());
     }
 
     @Override
-    public void deleteOrder(UUID id) {
-        Order order = orderRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Order not found"));
-        orderRepository.delete(order);
+    public OrderDTO updateOrderStatus(UUID id, String newStatus) {
+        Optional<Order> targetOrder = orderRepository.findById(id);
+        if (targetOrder.isEmpty()) {
+            throw new RuntimeException("Order not found");
+        }
+        targetOrder.get().setOrderStatus(OrderStatusEnum.valueOf(newStatus.toUpperCase()));
+        orderRepository.saveAndFlush(targetOrder.get());
+        return modelMapper.map(targetOrder, OrderDTO.class);
     }
-}*/
+
+    @Override
+    public OrderDTO getOrderById(UUID id) {
+        Optional<Order> requestedOrder = orderRepository.findById(id);
+        if (requestedOrder.isEmpty()) {
+            throw new RuntimeException("Order not found");
+        }
+        return modelMapper.map(requestedOrder, OrderDTO.class);
+    }
+
+    @Override
+    public void deleteOrderById(UUID id) {
+        orderRepository.deleteById(id);
+    }
+
+}

@@ -1,10 +1,7 @@
-/*
 package com.example.sop.services.dtos;
 
 import com.example.sop.enums.OrderStatusEnum;
-import com.example.sop.models.OrderItem;
 
-import java.util.List;
 import java.util.UUID;
 
 
@@ -15,24 +12,14 @@ public class OrderDTO {
     private String customerName;
     private String customerEmail;
     private OrderStatusEnum orderStatus;
-    private List<OrderItemDTO> orderItems;
 
 
-    public OrderDTO(UUID id, UUID employeeId, String customerName, String customerEmail, OrderStatusEnum orderStatus, List<OrderItemDTO> orderItems) {
+    public OrderDTO(UUID id, UUID employeeId, String customerName, String customerEmail, OrderStatusEnum orderStatus) {
         this.id = id;
         this.employeeId = employeeId;
         this.customerName = customerName;
         this.customerEmail = customerEmail;
         this.orderStatus = orderStatus;
-        this.orderItems = orderItems;
-    }
-
-    public OrderDTO(UUID employeeId, String customerName, String customerEmail, OrderStatusEnum orderStatus, List<OrderItemDTO> orderItems) {
-        this.employeeId = employeeId;
-        this.customerName = customerName;
-        this.customerEmail = customerEmail;
-        this.orderStatus = orderStatus;
-        this.orderItems = orderItems;
     }
 
     public OrderDTO(UUID employeeId, String customerName, String customerEmail, OrderStatusEnum orderStatus) {
@@ -65,10 +52,6 @@ public class OrderDTO {
         return orderStatus;
     }
 
-    public List<OrderItemDTO> getOrderItems() {
-        return orderItems;
-    }
-
 
     public void setId(UUID id) {
         this.id = id;
@@ -90,20 +73,4 @@ public class OrderDTO {
         this.orderStatus = orderStatus;
     }
 
-    public void setOrderItems(List<OrderItemDTO> orderItems) {
-        this.orderItems = orderItems;
-    }
-
-    @Override
-    public String toString() {
-        return "OrderDTO{" +
-                "id=" + id +
-                ", employeeId=" + employeeId +
-                ", customerName='" + customerName + '\'' +
-                ", customerEmail='" + customerEmail + '\'' +
-                ", orderStatus=" + orderStatus +
-                ", orderItems=" + orderItems +
-                '}';
-    }
-
-}*/
+}

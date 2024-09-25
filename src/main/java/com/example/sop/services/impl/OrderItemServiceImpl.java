@@ -1,4 +1,3 @@
-/*
 package com.example.sop.services.impl;
 
 import com.example.sop.models.Order;
@@ -34,19 +33,15 @@ public class OrderItemServiceImpl implements OrderItemService {
 
     @Override
     public OrderItemDTO createOrderItem(OrderItemDTO orderItemDTO) {
-        Order order = orderRepository.findById(orderItemDTO.getOrderId()).get();
         OrderItem orderItem = modelMapper.map(orderItemDTO, OrderItem.class);
-        orderItem.setOrder(order);
         orderItemRepository.saveAndFlush(orderItem);
-        OrderItemDTO newOrderItemDTO = modelMapper.map(orderItem, OrderItemDTO.class);
-        newOrderItemDTO.setOrderId(orderItem.getOrder().getId());
-        return newOrderItemDTO;
+        return modelMapper.map(orderItem, OrderItemDTO.class);
     }
 
     @Override
     public List<OrderItemDTO> getAllOrderItemsByOrderId(UUID orderId) {
-        List<OrderItem> orderItemsByOrderId = orderItemRepository.findOrderItemsByOrderId(orderId);
-        return orderItemsByOrderId.stream()
+        List<OrderItem> allOrderItemsByOrderId = orderItemRepository.findOrderItemsByOrderId(orderId);
+        return allOrderItemsByOrderId.stream()
                 .map(orderItem -> modelMapper.map(orderItem, OrderItemDTO.class))
                 .collect(Collectors.toList());
     }
@@ -56,4 +51,4 @@ public class OrderItemServiceImpl implements OrderItemService {
         orderItemRepository.deleteById(id);
     }
 
-}*/
+}

@@ -1,4 +1,3 @@
-/*
 package com.example.sop.services.dtos;
 
 import java.util.UUID;
@@ -7,21 +6,21 @@ import java.util.UUID;
 public class OrderItemDTO {
 
     private UUID id;
-    private UUID orderId;
+    private OrderDTO order;
     private PartDTO part;
     private int quantity;
 
 
-    public OrderItemDTO(UUID id, UUID orderId, PartDTO partDTO, int quantity) {
+    public OrderItemDTO(UUID id, OrderDTO order, PartDTO part, int quantity) {
         this.id = id;
-        this.orderId = orderId;
-        this.part = partDTO;
+        this.order = order;
+        this.part = part;
         this.quantity = quantity;
     }
 
-    public OrderItemDTO(UUID orderId, PartDTO partDTO, int quantity) {
-        this.orderId = orderId;
-        this.part = partDTO;
+    public OrderItemDTO(OrderDTO order, PartDTO part, int quantity) {
+        this.order = order;
+        this.part = part;
         this.quantity = quantity;
     }
 
@@ -32,8 +31,8 @@ public class OrderItemDTO {
         return id;
     }
 
-    public UUID getOrderId() {
-        return orderId;
+    public OrderDTO getOrder() {
+        return order;
     }
 
     public PartDTO getPart() {
@@ -49,26 +48,16 @@ public class OrderItemDTO {
         this.id = id;
     }
 
-    public void setOrderId(UUID orderId) {
-        this.orderId = orderId;
+    public void setOrder(OrderDTO order) {
+        this.order = order;
     }
 
-    public void setPart(PartDTO partDTO) {
-        this.part = partDTO;
+    public void setPart(PartDTO part) {
+        this.part = part;
     }
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
     }
 
-    @Override
-    public String toString() {
-        return "OrderItemDTO{" +
-                "id=" + id +
-                ", orderId=" + orderId +
-                ", part=" + part +
-                ", quantity=" + quantity +
-                '}';
-    }
-
-}*/
+}
