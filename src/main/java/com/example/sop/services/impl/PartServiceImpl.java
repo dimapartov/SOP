@@ -1,10 +1,8 @@
 package com.example.sop.services.impl;
 
-import com.example.sop.models.Employee;
 import com.example.sop.models.Part;
 import com.example.sop.repositories.PartRepository;
 import com.example.sop.services.PartService;
-import com.example.sop.services.dtos.EmployeeDTO;
 import com.example.sop.services.dtos.PartDTO;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;

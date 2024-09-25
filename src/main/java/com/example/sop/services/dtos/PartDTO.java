@@ -1,9 +1,6 @@
 package com.example.sop.services.dtos;
 
-import com.example.sop.models.OrderItem;
-
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.UUID;
 
 

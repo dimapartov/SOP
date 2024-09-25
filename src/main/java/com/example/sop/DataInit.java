@@ -30,11 +30,11 @@ public class DataInit implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        EmployeeDTO employee1 = new EmployeeDTO("Dima", "Kubarev", "test1@mail.ru","11111111111");
+        EmployeeDTO employee1 = new EmployeeDTO("Dima", "Kubarev", "test1@mail.ru", "11111111111");
         Employee employee1ToBeSaved = modelMapper.map(employee1, Employee.class);
         employeeRepository.saveAndFlush(employee1ToBeSaved);
 
-        EmployeeDTO employee2 = new EmployeeDTO("Aboba", "Aboba", "test2@mail.ru","22222222222");
+        EmployeeDTO employee2 = new EmployeeDTO("Aboba", "Aboba", "test2@mail.ru", "22222222222");
         Employee employee2ToBeSaved = modelMapper.map(employee2, Employee.class);
         employeeRepository.saveAndFlush(employee2ToBeSaved);
 
