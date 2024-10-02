@@ -16,30 +16,6 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 
-/*@RestController
-@RequestMapping("/api/orders")
-public class OrderController {
-
-    private OrderService orderService;
-
-
-    @Autowired
-    public void setOrderService(OrderService orderService) {
-        this.orderService = orderService;
-    }
-
-
-    @PostMapping("/create")
-
-    @GetMapping("/all")
-
-    @PutMapping("/update/{id}")
-
-    @GetMapping("/{id}")
-
-    @DeleteMapping("/delete/{id}")
-}*/
-
 @RestController
 @RequestMapping("/api/orders")
 public class OrderController {
@@ -51,7 +27,6 @@ public class OrderController {
         this.orderService = orderService;
     }
 
-    // Create a new order
     @PostMapping("/create")
     public ResponseEntity<EntityModel<OrderDTO>> createOrder(@RequestBody OrderDTO orderDTO) {
         OrderDTO createdOrder = orderService.createOrder(orderDTO);
@@ -65,7 +40,6 @@ public class OrderController {
                 .body(orderResource);
     }
 
-    // Get all orders
     @GetMapping("/all")
     public CollectionModel<EntityModel<OrderDTO>> getAllOrders() {
         List<EntityModel<OrderDTO>> orders = orderService.getAllOrders().stream()
@@ -78,7 +52,6 @@ public class OrderController {
                 linkTo(methodOn(OrderController.class).getAllOrders()).withSelfRel());
     }
 
-    // Update the order status by ID
     @PutMapping("/update/{id}")
     public ResponseEntity<EntityModel<OrderDTO>> updateOrderStatus(@PathVariable UUID id, @RequestParam String newStatus) {
         OrderDTO updatedOrder = orderService.updateOrderStatus(id, newStatus);
@@ -90,7 +63,6 @@ public class OrderController {
         return ResponseEntity.ok(orderResource);
     }
 
-    // Get order by ID
     @GetMapping("/{id}")
     public ResponseEntity<EntityModel<OrderDTO>> getOrderById(@PathVariable UUID id) {
         OrderDTO orderDTO = orderService.getOrderById(id);
@@ -102,7 +74,6 @@ public class OrderController {
         return ResponseEntity.ok(orderResource);
     }
 
-    // Delete order by ID
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<?> deleteOrder(@PathVariable UUID id) {
         orderService.deleteOrderById(id);

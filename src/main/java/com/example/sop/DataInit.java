@@ -5,10 +5,7 @@ import com.example.sop.repositories.EmployeeRepository;
 import com.example.sop.repositories.OrderItemRepository;
 import com.example.sop.repositories.OrderRepository;
 import com.example.sop.repositories.PartRepository;
-import com.example.sop.services.dtos.EmployeeDTO;
-import com.example.sop.services.dtos.OrderDTO;
-import com.example.sop.services.dtos.OrderItemDTO;
-import com.example.sop.services.dtos.PartDTO;
+import com.example.sop.services.dtos.*;
 import com.example.sop.services.interfaces.EmployeeService;
 import com.example.sop.services.interfaces.OrderItemService;
 import com.example.sop.services.interfaces.OrderService;
@@ -64,7 +61,7 @@ public class DataInit implements CommandLineRunner {
     public void run(String... args) {
 
         EmployeeDTO employee1 = new EmployeeDTO("Dima", "Kubarev", "test1@mail.ru", "11111111111");
-        EmployeeDTO employee2 = new EmployeeDTO("Aboba", "Aboba", "test2@mail.ru", "22222222222");
+        EmployeeDTO employee2 = new EmployeeDTO("Denis", "Denisov", "test2@mail.ru", "22222222222");
         employeeService.createEmployee(employee1);
         employeeService.createEmployee(employee2);
         List<EmployeeDTO> allEmployees = employeeService.getAllEmployees();
@@ -79,7 +76,7 @@ public class DataInit implements CommandLineRunner {
         orderService.createOrder(order1);
         List<OrderDTO> allOrders = orderService.getAllOrders();
 
-        OrderItemDTO orderItem1 = new OrderItemDTO(allOrders.get(0), allParts.get(0), 11);
+        OrderItemCreationDTO orderItem1 = new OrderItemCreationDTO(allOrders.get(0).getId(), allParts.get(0).getId(), 11);
         orderItemService.createOrderItem(orderItem1);
 
     }
