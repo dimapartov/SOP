@@ -5,7 +5,6 @@ import com.example.sop.services.interfaces.PartService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,63 +32,64 @@ public class PartController {
     public ResponseEntity<EntityModel<PartDTO>> createPart(@RequestBody PartDTO partDTO) {
         PartDTO createdPart = partService.createPart(partDTO);
 
-        EntityModel<PartDTO> resource = EntityModel.of(createdPart);
+        EntityModel<PartDTO> createdPartEntityModel = EntityModel.of(createdPart);
 
-        resource.add(linkTo(methodOn(PartController.class).getPartById(createdPart.getId())).withSelfRel());
-        resource.add(linkTo(methodOn(PartController.class).getAllParts()).withRel("allParts"));
-        resource.add(linkTo(methodOn(PartController.class).deletePartById(createdPart.getId())).withRel("deletePart"));
-        resource.add(linkTo(methodOn(PartController.class).changeQuantityOnStorage(createdPart.getId(), 0)).withRel("changeQuantity"));
+        createdPartEntityModel.add(linkTo(methodOn(PartController.class).getPartById(createdPart.getId())).withSelfRel());
+        createdPartEntityModel.add(linkTo(methodOn(PartController.class).getAllParts()).withRel("allParts"));
+        createdPartEntityModel.add(linkTo(methodOn(PartController.class).deletePartById(createdPart.getId())).withRel("deletePart"));
+        createdPartEntityModel.add(linkTo(methodOn(PartController.class).changeQuantityOnStorage(createdPart.getId(), 0)).withRel("changeQuantity"));
 
-        return new ResponseEntity<>(resource, HttpStatus.CREATED);
+        return ResponseEntity.created(createdPartEntityModel.getRequiredLink("self").toUri()).body(createdPartEntityModel);
     }
 
     @PutMapping("/update/{id}")
     public ResponseEntity<EntityModel<PartDTO>> changeQuantityOnStorage(@PathVariable UUID id, @RequestParam int newQuantityOnStorage) {
         PartDTO updatedPart = partService.changeQuantityOnStorage(id, newQuantityOnStorage);
 
-        EntityModel<PartDTO> resource = EntityModel.of(updatedPart);
+        EntityModel<PartDTO> updatedPartEntityModel = EntityModel.of(updatedPart);
 
-        resource.add(linkTo(methodOn(PartController.class).getPartById(id)).withSelfRel());
-        resource.add(linkTo(methodOn(PartController.class).getAllParts()).withRel("allParts"));
-        resource.add(linkTo(methodOn(PartController.class).deletePartById(updatedPart.getId())).withRel("deletePart"));
-        resource.add(linkTo(methodOn(PartController.class).changeQuantityOnStorage(updatedPart.getId(), 0)).withRel("changeQuantity"));
+        updatedPartEntityModel.add(linkTo(methodOn(PartController.class).getPartById(id)).withSelfRel());
+        updatedPartEntityModel.add(linkTo(methodOn(PartController.class).getAllParts()).withRel("allParts"));
+        updatedPartEntityModel.add(linkTo(methodOn(PartController.class).deletePartById(updatedPart.getId())).withRel("deletePart"));
+        updatedPartEntityModel.add(linkTo(methodOn(PartController.class).changeQuantityOnStorage(updatedPart.getId(), 0)).withRel("changeQuantity"));
 
-        return new ResponseEntity<>(resource, HttpStatus.OK);
+        return ResponseEntity.ok(updatedPartEntityModel);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<EntityModel<PartDTO>> getPartById(@PathVariable UUID id) {
         PartDTO partById = partService.getPartById(id);
 
-        EntityModel<PartDTO> resource = EntityModel.of(partById);
+        EntityModel<PartDTO> partByIdEntityModel = EntityModel.of(partById);
 
-        resource.add(linkTo(methodOn(PartController.class).getPartById(id)).withSelfRel());
-        resource.add(linkTo(methodOn(PartController.class).getAllParts()).withRel("allParts"));
-        resource.add(linkTo(methodOn(PartController.class).deletePartById(id)).withRel("deletePart"));
-        resource.add(linkTo(methodOn(PartController.class).changeQuantityOnStorage(partById.getId(), 0)).withRel("changeQuantity"));
+        partByIdEntityModel.add(linkTo(methodOn(PartController.class).getPartById(id)).withSelfRel());
+        partByIdEntityModel.add(linkTo(methodOn(PartController.class).getAllParts()).withRel("allParts"));
+        partByIdEntityModel.add(linkTo(methodOn(PartController.class).deletePartById(id)).withRel("deletePart"));
+        partByIdEntityModel.add(linkTo(methodOn(PartController.class).changeQuantityOnStorage(partById.getId(), 0)).withRel("changeQuantity"));
 
-        return new ResponseEntity<>(resource, HttpStatus.OK);
+        return ResponseEntity.ok(partByIdEntityModel);
     }
 
     @GetMapping("/all")
     public ResponseEntity<CollectionModel<EntityModel<PartDTO>>> getAllParts() {
-        List<EntityModel<PartDTO>> resources = partService.getAllParts().stream()
+        List<EntityModel<PartDTO>> allPartsEntityModels = partService.getAllParts()
+                .stream()
                 .map(part -> EntityModel.of(part,
                         linkTo(methodOn(PartController.class).getPartById(part.getId())).withSelfRel(),
                         linkTo(methodOn(PartController.class).deletePartById(part.getId())).withRel("deletePart"),
                         linkTo(methodOn(PartController.class).changeQuantityOnStorage(part.getId(), 0)).withRel("changeQuantity")))
                 .toList();
 
-        CollectionModel<EntityModel<PartDTO>> collectionModel = CollectionModel.of(resources);
+        CollectionModel<EntityModel<PartDTO>> allPartsCollectionModel = CollectionModel.of(allPartsEntityModels);
 
-        return new ResponseEntity<>(collectionModel, HttpStatus.OK);
+        return ResponseEntity.ok(allPartsCollectionModel);
     }
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> deletePartById(@PathVariable UUID id) {
         partService.deletePartById(id);
 
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return ResponseEntity.noContent().build();
     }
 
 }

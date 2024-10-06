@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -44,6 +45,15 @@ public class OrderItemServiceImpl implements OrderItemService {
         return allOrderItemsByOrderId.stream()
                 .map(orderItem -> modelMapper.map(orderItem, OrderItemDTO.class))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public OrderItemDTO getOrderItemById(UUID orderItemId) {
+        Optional<OrderItem> requestedOrderItem = orderItemRepository.findById(orderItemId);
+        if (requestedOrderItem.isEmpty()) {
+            throw new RuntimeException("Order item not found");
+        }
+        return modelMapper.map(requestedOrderItem, OrderItemDTO.class);
     }
 
     @Override

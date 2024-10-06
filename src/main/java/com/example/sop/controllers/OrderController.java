@@ -21,10 +21,12 @@ public class OrderController {
 
     private OrderService orderService;
 
+
     @Autowired
     public void setOrderService(OrderService orderService) {
         this.orderService = orderService;
     }
+
 
     @PostMapping("/create")
     public ResponseEntity<EntityModel<OrderDTO>> createOrder(@RequestBody OrderDTO orderDTO) {
@@ -33,7 +35,9 @@ public class OrderController {
         EntityModel<OrderDTO> createdOrderEntityModel = EntityModel.of(createdOrder);
 
         createdOrderEntityModel.add(linkTo(methodOn(OrderController.class).getOrderById(createdOrder.getId())).withSelfRel());
+        createdOrderEntityModel.add(linkTo(methodOn(OrderController.class).deleteOrder(createdOrder.getId())).withRel("deleteOrder"));
         createdOrderEntityModel.add(linkTo(methodOn(OrderController.class).getAllOrders()).withRel("allOrders"));
+        createdOrderEntityModel.add(linkTo(methodOn(OrderController.class).updateOrderStatus(createdOrder.getId(), "newStatus")).withRel("updateStatus"));
 
         return ResponseEntity.created(createdOrderEntityModel.getRequiredLink("self").toUri()).body(createdOrderEntityModel);
     }
@@ -44,6 +48,8 @@ public class OrderController {
                 .stream()
                 .map(order -> EntityModel.of(order,
                         linkTo(methodOn(OrderController.class).getOrderById(order.getId())).withSelfRel(),
+                        linkTo(methodOn(OrderController.class).deleteOrder(order.getId())).withRel("deleteOrder"),
+                        linkTo(methodOn(OrderController.class).updateOrderStatus(order.getId(), "newStatus")).withRel("updateStatus"),
                         linkTo(methodOn(OrderController.class).getAllOrders()).withRel("allOrders")))
                 .toList();
 
@@ -60,6 +66,8 @@ public class OrderController {
 
         updatedOrderEntityModel.add(linkTo(methodOn(OrderController.class).getOrderById(id)).withSelfRel());
         updatedOrderEntityModel.add(linkTo(methodOn(OrderController.class).getAllOrders()).withRel("allOrders"));
+        updatedOrderEntityModel.add(linkTo(methodOn(OrderController.class).deleteOrder(updatedOrder.getId())).withRel("deleteOrder"));
+
 
         return ResponseEntity.ok(updatedOrderEntityModel);
     }
@@ -72,6 +80,8 @@ public class OrderController {
 
         orderByIdEntityModel.add(linkTo(methodOn(OrderController.class).getOrderById(id)).withSelfRel());
         orderByIdEntityModel.add(linkTo(methodOn(OrderController.class).getAllOrders()).withRel("allOrders"));
+        orderByIdEntityModel.add(linkTo(methodOn(OrderController.class).deleteOrder(orderById.getId())).withRel("deleteOrder"));
+        orderByIdEntityModel.add(linkTo(methodOn(OrderController.class).updateOrderStatus(orderById.getId(), "newStatus")).withRel("updateStatus"));
 
         return ResponseEntity.ok(orderByIdEntityModel);
     }

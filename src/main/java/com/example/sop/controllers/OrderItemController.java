@@ -7,13 +7,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 
 @RestController
@@ -32,35 +33,49 @@ public class OrderItemController {
     @PostMapping("/create")
     public ResponseEntity<EntityModel<OrderItemCreationDTO>> createOrderItem(@RequestBody OrderItemCreationDTO orderItemCreationDTO) {
         OrderItemCreationDTO createdOrderItem = orderItemService.createOrderItem(orderItemCreationDTO);
-        EntityModel<OrderItemCreationDTO> resource = EntityModel.of(createdOrderItem);
-        Link orderLink = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(OrderItemController.class)
-                .getAllOrderItemsByOrderId(createdOrderItem.getOrderId())).withRel("order-items-by-order");
-        resource.add(orderLink);
-        Link deleteLink = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(OrderItemController.class)
-                .deleteOrderItemById(createdOrderItem.getId())).withRel("delete");
-        resource.add(deleteLink);
 
-        return new ResponseEntity<>(resource, HttpStatus.CREATED);
+        EntityModel<OrderItemCreationDTO> createdOrderItemEntityModel = EntityModel.of(createdOrderItem);
+
+        createdOrderItemEntityModel.add(linkTo(methodOn(OrderItemController.class).getOrderItemById(createdOrderItem.getId())).withSelfRel());
+        createdOrderItemEntityModel.add(linkTo(methodOn(OrderItemController.class).getAllOrderItemsByOrderId(orderItemCreationDTO.getOrderId())).withRel("allOrderItemsByOrderId"));
+        createdOrderItemEntityModel.add(linkTo(methodOn(OrderItemController.class).deleteOrderItemById(createdOrderItem.getId())).withRel("deleteOrderItem"));
+
+        return ResponseEntity.created(createdOrderItemEntityModel.getRequiredLink("self").toUri()).body(createdOrderItemEntityModel);
     }
 
     @GetMapping("/order/{orderId}")
     public ResponseEntity<List<EntityModel<OrderItemDTO>>> getAllOrderItemsByOrderId(@PathVariable UUID orderId) {
-        List<OrderItemDTO> orderItems = orderItemService.getAllOrderItemsByOrderId(orderId);
-        List<EntityModel<OrderItemDTO>> resources = orderItems.stream()
+        List<OrderItemDTO> orderItemsByOrderId = orderItemService.getAllOrderItemsByOrderId(orderId);
+
+        List<EntityModel<OrderItemDTO>> orderItemsByOrderIdEntityModels = orderItemsByOrderId.stream()
                 .map(orderItem -> {
-                    EntityModel<OrderItemDTO> resource = EntityModel.of(orderItem);
+                    EntityModel<OrderItemDTO> orderItemEntityModel = EntityModel.of(orderItem);
                     Link employeeLink = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(EmployeeController.class)
-                            .getEmployeeById(orderItem.getOrder().getEmployeeId())).withRel("employee-in-charge");
-                    resource.add(employeeLink);
-                    return resource;
+                            .getEmployeeById(orderItem.getOrder().getEmployeeId())).withRel("employeeInCharge");
+                    orderItemEntityModel.add(employeeLink);
+                    return orderItemEntityModel;
                 })
-                .collect(Collectors.toList());
-        return ResponseEntity.ok(resources);
+                .toList();
+
+        return ResponseEntity.ok(orderItemsByOrderIdEntityModels);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<EntityModel<OrderItemDTO>> getOrderItemById(@PathVariable UUID id) {
+        OrderItemDTO orderItemById = orderItemService.getOrderItemById(id);
+
+        EntityModel<OrderItemDTO> orderItemByIdEntityModel = EntityModel.of(orderItemById);
+
+        orderItemByIdEntityModel.add(linkTo(methodOn(OrderItemController.class).getAllOrderItemsByOrderId(orderItemById.getOrder().getId())).withRel("allOrderItemsByOrderId"));
+        orderItemByIdEntityModel.add(linkTo(methodOn(OrderItemController.class).deleteOrderItemById(orderItemById.getId())).withRel("deleteOrderItem"));
+
+        return ResponseEntity.ok(orderItemByIdEntityModel);
     }
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> deleteOrderItemById(@PathVariable UUID id) {
         orderItemService.deleteOrderItemById(id);
+
         return ResponseEntity.noContent().build();
     }
 
