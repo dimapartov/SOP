@@ -79,7 +79,7 @@ public class DataInit implements CommandLineRunner {
         partService.createPart(part2);
         List<PartDTO> allParts = partService.getAllParts();
 
-        OrderDTO order1 = new OrderDTO(allEmployees.get(0).getId(), "CustomerName", "CustomerEmail", OrderStatusEnum.PROCESSING);
+        OrderDTO order1 = new OrderDTO(allEmployees.get(0).getId(), "CustomerName", "CustomerEmail");
         orderService.createOrder(order1);
         List<OrderDTO> allOrders = orderService.getAllOrders();
 

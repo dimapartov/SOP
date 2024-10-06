@@ -34,6 +34,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderDTO createOrder(OrderDTO orderDTO) {
         Order order = modelMapper.map(orderDTO, Order.class);
+        order.setOrderStatus(OrderStatusEnum.CREATED);
         orderRepository.save(order);
         return modelMapper.map(order, OrderDTO.class);
     }

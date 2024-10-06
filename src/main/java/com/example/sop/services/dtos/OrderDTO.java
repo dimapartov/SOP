@@ -29,6 +29,12 @@ public class OrderDTO {
         this.orderStatus = orderStatus;
     }
 
+    public OrderDTO(UUID employeeId, String customerName, String customerEmail) {
+        this.employeeId = employeeId;
+        this.customerName = customerName;
+        this.customerEmail = customerEmail;
+    }
+
     public OrderDTO() {}
 
 

@@ -1,0 +1,26 @@
+type Query {
+    getAllOrders: [OrderDTO]
+    getOrderById(id: String!): OrderDTO
+}
+
+type Mutation {
+    createOrder(employeeId: String!, customerName: String!, customerEmail: String!): OrderDTO
+    updateOrderStatus(orderId: String!, newStatus: String!): OrderDTO
+    deleteOrder(orderId: String!): Boolean
+}
+
+type OrderDTO {
+    id: String
+    employeeId: String
+    customerName: String
+    customerEmail: String
+    orderStatus: OrderStatusEnum
+}
+
+enum OrderStatusEnum {
+    CREATED,
+    ACCEPTED,
+    PROCESSING,
+    COMPLETED,
+    CANCELED
+}
