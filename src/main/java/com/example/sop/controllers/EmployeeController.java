@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 
 @RestController
@@ -41,16 +40,16 @@ public class EmployeeController {
 
     @GetMapping("/all")
     public ResponseEntity<CollectionModel<EntityModel<EmployeeDTO>>> getAllEmployees() {
-        List<EntityModel<EmployeeDTO>> allEmployees = employeeService.getAllEmployees()
+        List<EntityModel<EmployeeDTO>> allEmployeesEntityModels = employeeService.getAllEmployees()
                 .stream()
                 .map(employee -> EntityModel.of(employee,
                         WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(EmployeeController.class).getEmployeeById(employee.getId())).withSelfRel(),
                         WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(EmployeeController.class).deleteEmployeeById(employee.getId())).withRel("deleteEmployee")))
-                .collect(Collectors.toList());
+                .toList();
 
-        CollectionModel<EntityModel<EmployeeDTO>> employeeCollectionModel = CollectionModel.of(allEmployees);
+        CollectionModel<EntityModel<EmployeeDTO>> allEmployeesCollectionModel = CollectionModel.of(allEmployeesEntityModels);
 
-        return ResponseEntity.ok(employeeCollectionModel);
+        return ResponseEntity.ok(allEmployeesCollectionModel);
     }
 
     @GetMapping("/{id}")

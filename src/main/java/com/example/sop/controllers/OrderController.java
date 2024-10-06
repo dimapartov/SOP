@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -31,53 +30,57 @@ public class OrderController {
     public ResponseEntity<EntityModel<OrderDTO>> createOrder(@RequestBody OrderDTO orderDTO) {
         OrderDTO createdOrder = orderService.createOrder(orderDTO);
 
-        EntityModel<OrderDTO> orderResource = EntityModel.of(createdOrder);
-        orderResource.add(linkTo(methodOn(OrderController.class).getOrderById(createdOrder.getId())).withSelfRel());
-        orderResource.add(linkTo(methodOn(OrderController.class).getAllOrders()).withRel("all-orders"));
+        EntityModel<OrderDTO> createdOrderEntityModel = EntityModel.of(createdOrder);
 
-        return ResponseEntity
-                .created(linkTo(methodOn(OrderController.class).getOrderById(createdOrder.getId())).toUri())
-                .body(orderResource);
+        createdOrderEntityModel.add(linkTo(methodOn(OrderController.class).getOrderById(createdOrder.getId())).withSelfRel());
+        createdOrderEntityModel.add(linkTo(methodOn(OrderController.class).getAllOrders()).withRel("allOrders"));
+
+        return ResponseEntity.created(createdOrderEntityModel.getRequiredLink("self").toUri()).body(createdOrderEntityModel);
     }
 
     @GetMapping("/all")
-    public CollectionModel<EntityModel<OrderDTO>> getAllOrders() {
-        List<EntityModel<OrderDTO>> orders = orderService.getAllOrders().stream()
+    public ResponseEntity<CollectionModel<EntityModel<OrderDTO>>> getAllOrders() {
+        List<EntityModel<OrderDTO>> allOrdersEntityModels = orderService.getAllOrders()
+                .stream()
                 .map(order -> EntityModel.of(order,
                         linkTo(methodOn(OrderController.class).getOrderById(order.getId())).withSelfRel(),
-                        linkTo(methodOn(OrderController.class).getAllOrders()).withRel("all-orders")))
-                .collect(Collectors.toList());
+                        linkTo(methodOn(OrderController.class).getAllOrders()).withRel("allOrders")))
+                .toList();
 
-        return CollectionModel.of(orders,
-                linkTo(methodOn(OrderController.class).getAllOrders()).withSelfRel());
+        CollectionModel<EntityModel<OrderDTO>> allOrdersCollectionModel = CollectionModel.of(allOrdersEntityModels);
+
+        return ResponseEntity.ok(allOrdersCollectionModel);
     }
 
     @PutMapping("/update/{id}")
     public ResponseEntity<EntityModel<OrderDTO>> updateOrderStatus(@PathVariable UUID id, @RequestParam String newStatus) {
         OrderDTO updatedOrder = orderService.updateOrderStatus(id, newStatus);
 
-        EntityModel<OrderDTO> orderResource = EntityModel.of(updatedOrder);
-        orderResource.add(linkTo(methodOn(OrderController.class).getOrderById(id)).withSelfRel());
-        orderResource.add(linkTo(methodOn(OrderController.class).getAllOrders()).withRel("all-orders"));
+        EntityModel<OrderDTO> updatedOrderEntityModel = EntityModel.of(updatedOrder);
 
-        return ResponseEntity.ok(orderResource);
+        updatedOrderEntityModel.add(linkTo(methodOn(OrderController.class).getOrderById(id)).withSelfRel());
+        updatedOrderEntityModel.add(linkTo(methodOn(OrderController.class).getAllOrders()).withRel("allOrders"));
+
+        return ResponseEntity.ok(updatedOrderEntityModel);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<EntityModel<OrderDTO>> getOrderById(@PathVariable UUID id) {
-        OrderDTO orderDTO = orderService.getOrderById(id);
+        OrderDTO orderById = orderService.getOrderById(id);
 
-        EntityModel<OrderDTO> orderResource = EntityModel.of(orderDTO);
-        orderResource.add(linkTo(methodOn(OrderController.class).getOrderById(id)).withSelfRel());
-        orderResource.add(linkTo(methodOn(OrderController.class).getAllOrders()).withRel("all-orders"));
+        EntityModel<OrderDTO> orderByIdEntityModel = EntityModel.of(orderById);
 
-        return ResponseEntity.ok(orderResource);
+        orderByIdEntityModel.add(linkTo(methodOn(OrderController.class).getOrderById(id)).withSelfRel());
+        orderByIdEntityModel.add(linkTo(methodOn(OrderController.class).getAllOrders()).withRel("allOrders"));
+
+        return ResponseEntity.ok(orderByIdEntityModel);
     }
 
     @DeleteMapping("/delete/{id}")
-    public ResponseEntity<?> deleteOrder(@PathVariable UUID id) {
+    public ResponseEntity<Void> deleteOrder(@PathVariable UUID id) {
         orderService.deleteOrderById(id);
 
         return ResponseEntity.noContent().build();
     }
+
 }
