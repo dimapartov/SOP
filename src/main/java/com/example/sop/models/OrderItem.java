@@ -13,7 +13,8 @@ public class OrderItem extends IdCreatedModified {
     private int quantity;
 
 
-    protected OrderItem() {}
+    protected OrderItem() {
+    }
 
 
     @ManyToOne(fetch = FetchType.LAZY)

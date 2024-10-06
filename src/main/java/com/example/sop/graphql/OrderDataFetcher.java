@@ -1,6 +1,5 @@
 package com.example.sop.graphql;
 
-import com.example.sop.enums.OrderStatusEnum;
 import com.example.sop.services.dtos.OrderDTO;
 import com.example.sop.services.interfaces.OrderService;
 import com.netflix.graphql.dgs.DgsComponent;

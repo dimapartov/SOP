@@ -18,7 +18,8 @@ public class Order extends IdCreatedModified {
     private List<OrderItem> orderItems;
 
 
-    protected Order() {}
+    protected Order() {
+    }
 
 
     @ManyToOne(fetch = FetchType.LAZY)

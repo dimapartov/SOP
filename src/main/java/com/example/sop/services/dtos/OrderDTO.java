@@ -35,7 +35,8 @@ public class OrderDTO {
         this.customerEmail = customerEmail;
     }
 
-    public OrderDTO() {}
+    public OrderDTO() {
+    }
 
 
     public UUID getId() {

@@ -5,7 +5,7 @@ import java.util.UUID;
 
 public class EmployeeDTO {
 
-    private UUID  id;
+    private UUID id;
     private String firstName;
     private String lastName;
     private String email;
@@ -27,7 +27,8 @@ public class EmployeeDTO {
         this.phoneNumber = phoneNumber;
     }
 
-    public EmployeeDTO() {}
+    public EmployeeDTO() {
+    }
 
 
     public UUID getId() {

@@ -9,9 +9,13 @@ import java.util.UUID;
 public interface OrderService {
 
     OrderDTO createOrder(OrderDTO orderDTO);
+
     List<OrderDTO> getAllOrders();
+
     OrderDTO updateOrderStatus(UUID id, String newStatus);
+
     OrderDTO getOrderById(UUID id);
+
     void deleteOrderById(UUID id);
 
 }

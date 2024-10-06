@@ -10,8 +10,11 @@ import java.util.UUID;
 public interface OrderItemService {
 
     OrderItemCreationDTO createOrderItem(OrderItemCreationDTO orderItemCreationDTO);
+
     List<OrderItemDTO> getAllOrderItemsByOrderId(UUID orderId);
+
     OrderItemDTO getOrderItemById(UUID orderItemId);
+
     void deleteOrderItemById(UUID id);
 
 }

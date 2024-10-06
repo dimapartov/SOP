@@ -25,7 +25,8 @@ public class PartDTO {
         this.price = price;
     }
 
-    public PartDTO() {}
+    public PartDTO() {
+    }
 
 
     public UUID getId() {

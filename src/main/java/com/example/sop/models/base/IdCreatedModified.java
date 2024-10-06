@@ -30,7 +30,7 @@ public abstract class IdCreatedModified {
     }
 
     @UpdateTimestamp
-    @Column(name="modified", nullable = false)
+    @Column(name = "modified", nullable = false)
     public LocalDateTime getModified() {
         return modified;
     }

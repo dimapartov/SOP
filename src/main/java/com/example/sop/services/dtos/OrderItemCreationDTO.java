@@ -24,7 +24,8 @@ public class OrderItemCreationDTO {
         this.quantity = quantity;
     }
 
-    public OrderItemCreationDTO() {}
+    public OrderItemCreationDTO() {
+    }
 
 
     public UUID getId() {
