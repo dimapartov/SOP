@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 
 @Service
@@ -47,9 +46,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public List<EmployeeDTO> getAllEmployees() {
         List<Employee> allEmployees = employeeRepository.findAll();
-        return allEmployees.stream()
-                .map(employee -> modelMapper.map(employee, EmployeeDTO.class))
-                .collect(Collectors.toList());
+        return allEmployees.stream().map(employee -> modelMapper.map(employee, EmployeeDTO.class)).toList();
     }
 
     @Override

@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 
 @Service
@@ -42,9 +41,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public List<OrderDTO> getAllOrders() {
         List<Order> allOrders = orderRepository.findAll();
-        return allOrders.stream()
-                .map(order -> modelMapper.map(order, OrderDTO.class))
-                .collect(Collectors.toList());
+        return allOrders.stream().map(order -> modelMapper.map(order, OrderDTO.class)).toList();
     }
 
     @Override

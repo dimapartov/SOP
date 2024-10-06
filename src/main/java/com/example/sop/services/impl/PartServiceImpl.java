@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 
 @Service
@@ -58,9 +57,7 @@ public class PartServiceImpl implements PartService {
     @Override
     public List<PartDTO> getAllParts() {
         List<Part> allParts = partRepository.findAll();
-        return allParts.stream()
-                .map(part -> modelMapper.map(part, PartDTO.class))
-                .collect(Collectors.toList());
+        return allParts.stream().map(part -> modelMapper.map(part, PartDTO.class)).toList();
     }
 
     @Override
