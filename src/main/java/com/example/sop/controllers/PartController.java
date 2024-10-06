@@ -59,23 +59,21 @@ public class PartController {
 
     @GetMapping("/{id}")
     public ResponseEntity<EntityModel<PartDTO>> getPartById(@PathVariable UUID id) {
-        PartDTO part = partService.getPartById(id);
+        PartDTO partById = partService.getPartById(id);
 
-        EntityModel<PartDTO> resource = EntityModel.of(part);
+        EntityModel<PartDTO> resource = EntityModel.of(partById);
 
         resource.add(linkTo(methodOn(PartController.class).getPartById(id)).withSelfRel());
         resource.add(linkTo(methodOn(PartController.class).getAllParts()).withRel("allParts"));
         resource.add(linkTo(methodOn(PartController.class).deletePartById(id)).withRel("deletePart"));
-        resource.add(linkTo(methodOn(PartController.class).changeQuantityOnStorage(part.getId(), 0)).withRel("changeQuantity"));
+        resource.add(linkTo(methodOn(PartController.class).changeQuantityOnStorage(partById.getId(), 0)).withRel("changeQuantity"));
 
         return new ResponseEntity<>(resource, HttpStatus.OK);
     }
 
     @GetMapping("/all")
     public ResponseEntity<CollectionModel<EntityModel<PartDTO>>> getAllParts() {
-        List<PartDTO> parts = partService.getAllParts();
-
-        List<EntityModel<PartDTO>> resources = parts.stream()
+        List<EntityModel<PartDTO>> resources = partService.getAllParts().stream()
                 .map(part -> EntityModel.of(part,
                         linkTo(methodOn(PartController.class).getPartById(part.getId())).withSelfRel(),
                         linkTo(methodOn(PartController.class).deletePartById(part.getId())).withRel("deletePart"),

@@ -5,7 +5,10 @@ import com.example.sop.repositories.EmployeeRepository;
 import com.example.sop.repositories.OrderItemRepository;
 import com.example.sop.repositories.OrderRepository;
 import com.example.sop.repositories.PartRepository;
-import com.example.sop.services.dtos.*;
+import com.example.sop.services.dtos.EmployeeDTO;
+import com.example.sop.services.dtos.OrderDTO;
+import com.example.sop.services.dtos.OrderItemCreationDTO;
+import com.example.sop.services.dtos.PartDTO;
 import com.example.sop.services.interfaces.EmployeeService;
 import com.example.sop.services.interfaces.OrderItemService;
 import com.example.sop.services.interfaces.OrderService;
@@ -59,7 +62,11 @@ public class DataInit implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
+//        seedData();
+    }
 
+
+    private void seedData() {
         EmployeeDTO employee1 = new EmployeeDTO("Dima", "Kubarev", "test1@mail.ru", "11111111111");
         EmployeeDTO employee2 = new EmployeeDTO("Denis", "Denisov", "test2@mail.ru", "22222222222");
         employeeService.createEmployee(employee1);
@@ -78,7 +85,6 @@ public class DataInit implements CommandLineRunner {
 
         OrderItemCreationDTO orderItem1 = new OrderItemCreationDTO(allOrders.get(0).getId(), allParts.get(0).getId(), 11);
         orderItemService.createOrderItem(orderItem1);
-
     }
 
 }
