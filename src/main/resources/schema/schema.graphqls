@@ -1,12 +1,18 @@
 type Query {
     getAllOrders: [OrderDTO]
     getOrderById(id: String!): OrderDTO
+
+    getAllOrderItemsByOrderId(id: String!): [OrderItemDTO]
+    getOrderItemById(id: String!): OrderItemDTO
 }
 
 type Mutation {
     createOrder(employeeId: String!, customerName: String!, customerEmail: String!): OrderDTO
     updateOrderStatus(orderId: String!, newStatus: String!): OrderDTO
     deleteOrder(orderId: String!): Boolean
+
+    createOrderItem(orderId: String!, partId: String!, quantity: Int): OrderItemCreationDTO
+    deleteOrderItemById(id: String!): Boolean
 }
 
 type OrderDTO {
@@ -15,6 +21,26 @@ type OrderDTO {
     customerName: String
     customerEmail: String
     orderStatus: OrderStatusEnum
+}
+
+type OrderItemDTO {
+    id: String
+    order: OrderDTO
+    part: PartDTO
+    quantity: Int
+}
+
+type PartDTO {
+    id: String
+    name: String
+    quantityOnStorage: Int
+    price: Float
+}
+
+type OrderItemCreationDTO {
+    orderId: String
+    partId: String
+    quantity: Int
 }
 
 enum OrderStatusEnum {

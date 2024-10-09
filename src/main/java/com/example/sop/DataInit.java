@@ -61,7 +61,7 @@ public class DataInit implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        seedData();
+//        seedData();
     }
 
 
