@@ -9,6 +9,7 @@ import com.netflix.graphql.dgs.DgsMutation;
 import com.netflix.graphql.dgs.DgsQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.List;
 import java.util.UUID;
 
 
@@ -29,6 +30,11 @@ public class OrderItemDataFetcher {
         return orderItemService.getOrderItemById(UUID.fromString(id));
     }
 
+    @DgsQuery
+    public List<OrderItemDTO> getAllOrderItemsByOrderId(String id) {
+        return orderItemService.getAllOrderItemsByOrderId(UUID.fromString(id));
+    }
+
     @DgsMutation
     public OrderItemCreationDTO createOrderItem(String orderId, String partId, int quantity) {
         OrderItemCreationDTO newOrderItem = new OrderItemCreationDTO();
@@ -41,7 +47,7 @@ public class OrderItemDataFetcher {
     }
 
     @DgsMutation
-    public Boolean deleteOrderItem(String orderId) {
+    public Boolean deleteOrderItemById(String orderId) {
         orderItemService.deleteOrderItemById(UUID.fromString(orderId));
         return true;
     }
