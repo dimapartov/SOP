@@ -1,6 +1,5 @@
 package com.example.sop.graphql;
 
-import com.example.sop.services.dtos.OrderDTO;
 import com.example.sop.services.dtos.OrderItemCreationDTO;
 import com.example.sop.services.dtos.OrderItemDTO;
 import com.example.sop.services.interfaces.OrderItemService;
