@@ -1,5 +1,6 @@
 package com.example.sop.controllers;
 
+import com.example.sop.services.RabbitMQPublisherService;
 import com.example.sop.services.dtos.OrderDTO;
 import com.example.sop.services.interfaces.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 public class OrderController {
 
     private OrderService orderService;
+    private RabbitMQPublisherService rabbitMQPublisherService;
 
 
     @Autowired
@@ -27,10 +29,17 @@ public class OrderController {
         this.orderService = orderService;
     }
 
+    @Autowired
+    public void setRabbitMQPublisherService(RabbitMQPublisherService rabbitMQPublisherService) {
+        this.rabbitMQPublisherService = rabbitMQPublisherService;
+    }
+
 
     @PostMapping("/create")
     public ResponseEntity<EntityModel<OrderDTO>> createOrder(@RequestBody OrderDTO orderDTO) {
         OrderDTO createdOrder = orderService.createOrder(orderDTO);
+
+        rabbitMQPublisherService.sendMessage("orders.create", createdOrder);
 
         EntityModel<OrderDTO> createdOrderEntityModel = EntityModel.of(createdOrder);
 
@@ -62,6 +71,8 @@ public class OrderController {
     public ResponseEntity<EntityModel<OrderDTO>> updateOrderStatus(@PathVariable UUID id, @RequestParam String newStatus) {
         OrderDTO updatedOrder = orderService.updateOrderStatus(id, newStatus);
 
+        rabbitMQPublisherService.sendMessage("orders.update", updatedOrder);
+
         EntityModel<OrderDTO> updatedOrderEntityModel = EntityModel.of(updatedOrder);
 
         updatedOrderEntityModel.add(linkTo(methodOn(OrderController.class).getOrderById(id)).withSelfRel());
@@ -89,6 +100,8 @@ public class OrderController {
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<Void> deleteOrder(@PathVariable UUID id) {
         orderService.deleteOrderById(id);
+
+        rabbitMQPublisherService.sendMessage("orders.delete", "Deleted order with ID: " + id);
 
         return ResponseEntity.noContent().build();
     }
