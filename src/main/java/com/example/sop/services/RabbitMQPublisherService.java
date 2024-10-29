@@ -1,3 +1,4 @@
+/*
 package com.example.sop.services;
 
 import com.example.sop.config.RabbitMQConfiguration;
@@ -31,4 +32,4 @@ public class RabbitMQPublisherService {
             System.err.println("Unknown error:" + e.getMessage());
         }
     }
-}
+}*/

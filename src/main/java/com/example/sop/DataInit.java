@@ -66,7 +66,7 @@ public class DataInit implements CommandLineRunner {
 
 
     private void seedData() {
-        EmployeeDTO employee1 = new EmployeeDTO("Dima", "Kubarev", "test1@mail.ru", "11111111111");
+        EmployeeDTO employee1 = new EmployeeDTO("Dima", "Kubarev", "uvp112.kubarev.d@mail.ru", "11111111111");
         EmployeeDTO employee2 = new EmployeeDTO("Denis", "Denisov", "test2@mail.ru", "22222222222");
         employeeService.createEmployee(employee1);
         employeeService.createEmployee(employee2);
@@ -78,7 +78,7 @@ public class DataInit implements CommandLineRunner {
         partService.createPart(part2);
         List<PartDTO> allParts = partService.getAllParts();
 
-        OrderDTO order1 = new OrderDTO(allEmployees.get(0).getId(), "CustomerName", "customer@mail.ru");
+        OrderDTO order1 = new OrderDTO(allEmployees.get(0).getId(), "CustomerName", "uvp112.kubarev.d@mail.ru");
         orderService.createOrder(order1);
         List<OrderDTO> allOrders = orderService.getAllOrders();
 

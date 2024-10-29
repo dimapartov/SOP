@@ -12,37 +12,20 @@ import org.springframework.context.annotation.Configuration;
 public class RabbitMQConfiguration {
 
     public static final String EXCHANGE_NAME = "ordersExchange";
-    public static final String CREATE_QUEUE_NAME = "createQueue";
-    public static final String UPDATE_QUEUE_NAME = "updateQueue";
-    public static final String DELETE_QUEUE_NAME = "deleteQueue";
+    public static final String ORDERS_QUEUE_NAME = "ordersQueue";
 
-
-    @Bean
-    public Jackson2JsonMessageConverter jsonMessageConverter() {
-        return new Jackson2JsonMessageConverter();
-    }
 
     @Bean
     public RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory) {
         RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
-        rabbitTemplate.setMessageConverter(jsonMessageConverter());
+        rabbitTemplate.setMessageConverter(new Jackson2JsonMessageConverter());
         return rabbitTemplate;
     }
 
 
     @Bean
-    public Queue createQueue() {
-        return new Queue(CREATE_QUEUE_NAME, true);
-    }
-
-    @Bean
-    public Queue updateQueue() {
-        return new Queue(UPDATE_QUEUE_NAME, true);
-    }
-
-    @Bean
-    public Queue deleteQueue() {
-        return new Queue(DELETE_QUEUE_NAME, true);
+    public Queue ordersQueue() {
+        return new Queue(ORDERS_QUEUE_NAME, true);
     }
 
 
@@ -53,17 +36,8 @@ public class RabbitMQConfiguration {
 
 
     @Bean
-    public Binding createBinding(Queue createQueue, TopicExchange ordersExchange) {
-        return BindingBuilder.bind(createQueue).to(ordersExchange).with("orders.create");
+    public Binding ordersBinding(Queue ordersQueue, TopicExchange ordersExchange) {
+        return BindingBuilder.bind(ordersQueue).to(ordersExchange).with("orders.#");
     }
 
-    @Bean
-    public Binding updateBinding(Queue updateQueue, TopicExchange ordersExchange) {
-        return BindingBuilder.bind(updateQueue).to(ordersExchange).with("orders.update");
-    }
-
-    @Bean
-    public Binding deleteBinding(Queue deleteQueue, TopicExchange ordersExchange) {
-        return BindingBuilder.bind(deleteQueue).to(ordersExchange).with("orders.delete");
-    }
 }

@@ -1,8 +1,9 @@
 package com.example.sop.controllers;
 
-import com.example.sop.services.RabbitMQPublisherService;
+import com.example.sop.config.RabbitMQConfiguration;
 import com.example.sop.services.dtos.OrderDTO;
 import com.example.sop.services.interfaces.OrderService;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
@@ -21,7 +22,11 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 public class OrderController {
 
     private OrderService orderService;
+    private RabbitTemplate rabbitTemplate;
+
+/*
     private RabbitMQPublisherService rabbitMQPublisherService;
+*/
 
 
     @Autowired
@@ -30,16 +35,21 @@ public class OrderController {
     }
 
     @Autowired
+    public void setRabbitTemplate(RabbitTemplate rabbitTemplate) {
+        this.rabbitTemplate = rabbitTemplate;
+    }
+
+/*    @Autowired
     public void setRabbitMQPublisherService(RabbitMQPublisherService rabbitMQPublisherService) {
         this.rabbitMQPublisherService = rabbitMQPublisherService;
-    }
+    }*/
 
 
     @PostMapping("/create")
     public ResponseEntity<EntityModel<OrderDTO>> createOrder(@RequestBody OrderDTO orderDTO) {
         OrderDTO createdOrder = orderService.createOrder(orderDTO);
 
-        rabbitMQPublisherService.sendMessage("orders.create", createdOrder);
+        rabbitTemplate.convertAndSend(RabbitMQConfiguration.EXCHANGE_NAME, "orders.create", createdOrder);
 
         EntityModel<OrderDTO> createdOrderEntityModel = EntityModel.of(createdOrder);
 
@@ -71,7 +81,7 @@ public class OrderController {
     public ResponseEntity<EntityModel<OrderDTO>> updateOrderStatus(@PathVariable UUID id, @RequestParam String newStatus) {
         OrderDTO updatedOrder = orderService.updateOrderStatus(id, newStatus);
 
-        rabbitMQPublisherService.sendMessage("orders.update", updatedOrder);
+        rabbitTemplate.convertAndSend(RabbitMQConfiguration.EXCHANGE_NAME, "orders.update.status", updatedOrder);
 
         EntityModel<OrderDTO> updatedOrderEntityModel = EntityModel.of(updatedOrder);
 
@@ -101,7 +111,7 @@ public class OrderController {
     public ResponseEntity<Void> deleteOrder(@PathVariable UUID id) {
         orderService.deleteOrderById(id);
 
-        rabbitMQPublisherService.sendMessage("orders.delete", "Deleted order with ID: " + id);
+        rabbitTemplate.convertAndSend(RabbitMQConfiguration.EXCHANGE_NAME, "orders.delete", "Successfully deleted order with order ID: " + id);
 
         return ResponseEntity.noContent().build();
     }
