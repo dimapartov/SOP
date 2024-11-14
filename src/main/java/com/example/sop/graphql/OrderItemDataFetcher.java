@@ -25,13 +25,13 @@ public class OrderItemDataFetcher {
 
 
     @DgsQuery
-    public OrderItemDTO getOrderItemById(String id) {
-        return orderItemService.getOrderItemById(UUID.fromString(id));
+    public OrderItemDTO getOrderItemById(String orderItemId) {
+        return orderItemService.getOrderItemById(UUID.fromString(orderItemId));
     }
 
     @DgsQuery
-    public List<OrderItemDTO> getAllOrderItemsByOrderId(String id) {
-        return orderItemService.getAllOrderItemsByOrderId(UUID.fromString(id));
+    public List<OrderItemDTO> getAllOrderItemsByOrderId(String orderId) {
+        return orderItemService.getAllOrderItemsByOrderId(UUID.fromString(orderId));
     }
 
     @DgsMutation
@@ -46,8 +46,8 @@ public class OrderItemDataFetcher {
     }
 
     @DgsMutation
-    public Boolean deleteOrderItemById(String orderId) {
-        orderItemService.deleteOrderItemById(UUID.fromString(orderId));
+    public Boolean deleteOrderItemById(String orderItemId) {
+        orderItemService.deleteOrderItemById(UUID.fromString(orderItemId));
         return true;
     }
 

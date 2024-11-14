@@ -52,21 +52,21 @@ public class EmployeeController {
         return ResponseEntity.ok(allEmployeesCollectionModel);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<EntityModel<EmployeeDTO>> getEmployeeById(@PathVariable UUID id) {
-        EmployeeDTO employeeById = employeeService.getEmployeeById(id);
+    @GetMapping("/{employeeId}")
+    public ResponseEntity<EntityModel<EmployeeDTO>> getEmployeeById(@PathVariable UUID employeeId) {
+        EmployeeDTO employeeById = employeeService.getEmployeeById(employeeId);
 
         EntityModel<EmployeeDTO> employeeByIdEntityModel = EntityModel.of(employeeById,
-                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(EmployeeController.class).getEmployeeById(id)).withSelfRel(),
-                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(EmployeeController.class).deleteEmployeeById(id)).withRel("deleteEmployee"),
+                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(EmployeeController.class).getEmployeeById(employeeId)).withSelfRel(),
+                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(EmployeeController.class).deleteEmployeeById(employeeId)).withRel("deleteEmployee"),
                 WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(EmployeeController.class).getAllEmployees()).withRel("allEmployees"));
 
         return ResponseEntity.ok(employeeByIdEntityModel);
     }
 
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Void> deleteEmployeeById(@PathVariable UUID id) {
-        employeeService.deleteEmployeeById(id);
+    @DeleteMapping("/delete/{employeeId}")
+    public ResponseEntity<Void> deleteEmployeeById(@PathVariable UUID employeeId) {
+        employeeService.deleteEmployeeById(employeeId);
 
         return ResponseEntity.noContent().build();
     }

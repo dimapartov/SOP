@@ -10,10 +10,10 @@ public interface EmployeeService {
 
     EmployeeDTO createEmployee(EmployeeDTO employeeDTO);
 
-    EmployeeDTO getEmployeeById(UUID id);
+    EmployeeDTO getEmployeeById(UUID employeeId);
 
     List<EmployeeDTO> getAllEmployees();
 
-    void deleteEmployeeById(UUID id);
+    void deleteEmployeeById(UUID employeeId);
 
 }

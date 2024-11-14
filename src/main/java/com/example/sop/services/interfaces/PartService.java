@@ -10,12 +10,12 @@ public interface PartService {
 
     PartDTO createPart(PartDTO partDTO);
 
-    PartDTO changeQuantityOnStorage(UUID id, int newQuantityOnStorage);
+    PartDTO changeQuantityOnStorage(UUID partId, int newQuantityOnStorage);
 
-    PartDTO getPartById(UUID id);
+    PartDTO getPartById(UUID partId);
 
     List<PartDTO> getAllParts();
 
-    void deletePartById(UUID id);
+    void deletePartById(UUID partId);
 
 }

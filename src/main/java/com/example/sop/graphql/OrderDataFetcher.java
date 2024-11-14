@@ -29,8 +29,8 @@ public class OrderDataFetcher {
     }
 
     @DgsQuery
-    public OrderDTO getOrderById(String id) {
-        return orderService.getOrderById(UUID.fromString(id));
+    public OrderDTO getOrderById(String orderId) {
+        return orderService.getOrderById(UUID.fromString(orderId));
     }
 
     @DgsMutation
@@ -49,7 +49,7 @@ public class OrderDataFetcher {
     }
 
     @DgsMutation
-    public Boolean deleteOrder(String orderId) {
+    public Boolean deleteOrderById(String orderId) {
         orderService.deleteOrderById(UUID.fromString(orderId));
         return true;
     }

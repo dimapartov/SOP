@@ -77,15 +77,15 @@ public class OrderController {
         return ResponseEntity.ok(allOrdersCollectionModel);
     }
 
-    @PutMapping("/update/{id}")
-    public ResponseEntity<EntityModel<OrderDTO>> updateOrderStatus(@PathVariable UUID id, @RequestParam String newStatus) {
-        OrderDTO updatedOrder = orderService.updateOrderStatus(id, newStatus);
+    @PutMapping("/update/{orderId}")
+    public ResponseEntity<EntityModel<OrderDTO>> updateOrderStatus(@PathVariable UUID orderId, @RequestParam String newStatus) {
+        OrderDTO updatedOrder = orderService.updateOrderStatus(orderId, newStatus);
 
         rabbitTemplate.convertAndSend(RabbitMQConfiguration.EXCHANGE_NAME, "orders.update.status", updatedOrder);
 
         EntityModel<OrderDTO> updatedOrderEntityModel = EntityModel.of(updatedOrder);
 
-        updatedOrderEntityModel.add(linkTo(methodOn(OrderController.class).getOrderById(id)).withSelfRel());
+        updatedOrderEntityModel.add(linkTo(methodOn(OrderController.class).getOrderById(orderId)).withSelfRel());
         updatedOrderEntityModel.add(linkTo(methodOn(OrderController.class).getAllOrders()).withRel("allOrders"));
         updatedOrderEntityModel.add(linkTo(methodOn(OrderController.class).deleteOrder(updatedOrder.getId())).withRel("deleteOrder"));
 
@@ -93,13 +93,13 @@ public class OrderController {
         return ResponseEntity.ok(updatedOrderEntityModel);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<EntityModel<OrderDTO>> getOrderById(@PathVariable UUID id) {
-        OrderDTO orderById = orderService.getOrderById(id);
+    @GetMapping("/{orderId}")
+    public ResponseEntity<EntityModel<OrderDTO>> getOrderById(@PathVariable UUID orderId) {
+        OrderDTO orderById = orderService.getOrderById(orderId);
 
         EntityModel<OrderDTO> orderByIdEntityModel = EntityModel.of(orderById);
 
-        orderByIdEntityModel.add(linkTo(methodOn(OrderController.class).getOrderById(id)).withSelfRel());
+        orderByIdEntityModel.add(linkTo(methodOn(OrderController.class).getOrderById(orderId)).withSelfRel());
         orderByIdEntityModel.add(linkTo(methodOn(OrderController.class).getAllOrders()).withRel("allOrders"));
         orderByIdEntityModel.add(linkTo(methodOn(OrderController.class).deleteOrder(orderById.getId())).withRel("deleteOrder"));
         orderByIdEntityModel.add(linkTo(methodOn(OrderController.class).updateOrderStatus(orderById.getId(), "newStatus")).withRel("updateStatus"));
@@ -107,11 +107,11 @@ public class OrderController {
         return ResponseEntity.ok(orderByIdEntityModel);
     }
 
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Void> deleteOrder(@PathVariable UUID id) {
-        orderService.deleteOrderById(id);
+    @DeleteMapping("/delete/{orderId}")
+    public ResponseEntity<Void> deleteOrder(@PathVariable UUID orderId) {
+        orderService.deleteOrderById(orderId);
 
-        rabbitTemplate.convertAndSend(RabbitMQConfiguration.EXCHANGE_NAME, "orders.delete", "Successfully deleted order with order ID: " + id);
+        rabbitTemplate.convertAndSend(RabbitMQConfiguration.EXCHANGE_NAME, "orders.delete", "Successfully deleted order with order ID: " + orderId);
 
         return ResponseEntity.noContent().build();
     }

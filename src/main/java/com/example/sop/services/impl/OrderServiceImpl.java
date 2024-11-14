@@ -5,6 +5,7 @@ import com.example.sop.models.Order;
 import com.example.sop.repositories.EmployeeRepository;
 import com.example.sop.repositories.OrderRepository;
 import com.example.sop.services.dtos.OrderDTO;
+import com.example.sop.services.exceptions.OrderNotFoundException;
 import com.example.sop.services.interfaces.OrderService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,10 +47,10 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public OrderDTO updateOrderStatus(UUID id, String newStatus) {
-        Optional<Order> targetOrder = orderRepository.findById(id);
+    public OrderDTO updateOrderStatus(UUID orderId, String newStatus) {
+        Optional<Order> targetOrder = orderRepository.findById(orderId);
         if (targetOrder.isEmpty()) {
-            throw new RuntimeException("Order not found");
+            throw new OrderNotFoundException(orderId);
         }
         targetOrder.get().setOrderStatus(OrderStatusEnum.valueOf(newStatus.toUpperCase()));
         orderRepository.saveAndFlush(targetOrder.get());
@@ -57,17 +58,21 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public OrderDTO getOrderById(UUID id) {
-        Optional<Order> requestedOrder = orderRepository.findById(id);
+    public OrderDTO getOrderById(UUID orderId) {
+        Optional<Order> requestedOrder = orderRepository.findById(orderId);
         if (requestedOrder.isEmpty()) {
-            throw new RuntimeException("Order not found");
+            throw new OrderNotFoundException(orderId);
         }
         return modelMapper.map(requestedOrder, OrderDTO.class);
     }
 
     @Override
-    public void deleteOrderById(UUID id) {
-        orderRepository.deleteById(id);
+    public void deleteOrderById(UUID orderId) {
+        Optional<Order> requestedOrder = orderRepository.findById(orderId);
+        if (requestedOrder.isEmpty()) {
+            throw new OrderNotFoundException(orderId);
+        }
+        orderRepository.deleteById(orderId);
     }
 
 }

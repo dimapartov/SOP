@@ -42,13 +42,13 @@ public class PartController {
         return ResponseEntity.created(createdPartEntityModel.getRequiredLink("self").toUri()).body(createdPartEntityModel);
     }
 
-    @PutMapping("/update/{id}")
-    public ResponseEntity<EntityModel<PartDTO>> changeQuantityOnStorage(@PathVariable UUID id, @RequestParam int newQuantityOnStorage) {
-        PartDTO updatedPart = partService.changeQuantityOnStorage(id, newQuantityOnStorage);
+    @PutMapping("/update/{partId}")
+    public ResponseEntity<EntityModel<PartDTO>> changeQuantityOnStorage(@PathVariable UUID partId, @RequestParam int newQuantityOnStorage) {
+        PartDTO updatedPart = partService.changeQuantityOnStorage(partId, newQuantityOnStorage);
 
         EntityModel<PartDTO> updatedPartEntityModel = EntityModel.of(updatedPart);
 
-        updatedPartEntityModel.add(linkTo(methodOn(PartController.class).getPartById(id)).withSelfRel());
+        updatedPartEntityModel.add(linkTo(methodOn(PartController.class).getPartById(partId)).withSelfRel());
         updatedPartEntityModel.add(linkTo(methodOn(PartController.class).getAllParts()).withRel("allParts"));
         updatedPartEntityModel.add(linkTo(methodOn(PartController.class).deletePartById(updatedPart.getId())).withRel("deletePart"));
         updatedPartEntityModel.add(linkTo(methodOn(PartController.class).changeQuantityOnStorage(updatedPart.getId(), 0)).withRel("changeQuantity"));
@@ -56,15 +56,15 @@ public class PartController {
         return ResponseEntity.ok(updatedPartEntityModel);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<EntityModel<PartDTO>> getPartById(@PathVariable UUID id) {
-        PartDTO partById = partService.getPartById(id);
+    @GetMapping("/{partId}")
+    public ResponseEntity<EntityModel<PartDTO>> getPartById(@PathVariable UUID partId) {
+        PartDTO partById = partService.getPartById(partId);
 
         EntityModel<PartDTO> partByIdEntityModel = EntityModel.of(partById);
 
-        partByIdEntityModel.add(linkTo(methodOn(PartController.class).getPartById(id)).withSelfRel());
+        partByIdEntityModel.add(linkTo(methodOn(PartController.class).getPartById(partId)).withSelfRel());
         partByIdEntityModel.add(linkTo(methodOn(PartController.class).getAllParts()).withRel("allParts"));
-        partByIdEntityModel.add(linkTo(methodOn(PartController.class).deletePartById(id)).withRel("deletePart"));
+        partByIdEntityModel.add(linkTo(methodOn(PartController.class).deletePartById(partId)).withRel("deletePart"));
         partByIdEntityModel.add(linkTo(methodOn(PartController.class).changeQuantityOnStorage(partById.getId(), 0)).withRel("changeQuantity"));
 
         return ResponseEntity.ok(partByIdEntityModel);
@@ -85,9 +85,9 @@ public class PartController {
         return ResponseEntity.ok(allPartsCollectionModel);
     }
 
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Void> deletePartById(@PathVariable UUID id) {
-        partService.deletePartById(id);
+    @DeleteMapping("/delete/{partId}")
+    public ResponseEntity<Void> deletePartById(@PathVariable UUID partId) {
+        partService.deletePartById(partId);
 
         return ResponseEntity.noContent().build();
     }

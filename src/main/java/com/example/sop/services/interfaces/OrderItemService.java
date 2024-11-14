@@ -15,6 +15,6 @@ public interface OrderItemService {
 
     OrderItemDTO getOrderItemById(UUID orderItemId);
 
-    void deleteOrderItemById(UUID id);
+    void deleteOrderItemById(UUID orderItemId);
 
 }

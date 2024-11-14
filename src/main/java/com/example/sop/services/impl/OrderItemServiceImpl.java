@@ -5,6 +5,7 @@ import com.example.sop.repositories.OrderItemRepository;
 import com.example.sop.repositories.OrderRepository;
 import com.example.sop.services.dtos.OrderItemCreationDTO;
 import com.example.sop.services.dtos.OrderItemDTO;
+import com.example.sop.services.exceptions.OrderItemNotFoundException;
 import com.example.sop.services.interfaces.OrderItemService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,14 +49,18 @@ public class OrderItemServiceImpl implements OrderItemService {
     public OrderItemDTO getOrderItemById(UUID orderItemId) {
         Optional<OrderItem> requestedOrderItem = orderItemRepository.findById(orderItemId);
         if (requestedOrderItem.isEmpty()) {
-            throw new RuntimeException("Order item not found");
+            throw new OrderItemNotFoundException(orderItemId);
         }
         return modelMapper.map(requestedOrderItem, OrderItemDTO.class);
     }
 
     @Override
-    public void deleteOrderItemById(UUID id) {
-        orderItemRepository.deleteById(id);
+    public void deleteOrderItemById(UUID orderItemId) {
+        Optional<OrderItem> requestedOrderItem = orderItemRepository.findById(orderItemId);
+        if (requestedOrderItem.isEmpty()) {
+            throw new OrderItemNotFoundException(orderItemId);
+        }
+        orderItemRepository.deleteById(orderItemId);
     }
 
 }

@@ -12,10 +12,10 @@ public interface OrderService {
 
     List<OrderDTO> getAllOrders();
 
-    OrderDTO updateOrderStatus(UUID id, String newStatus);
+    OrderDTO updateOrderStatus(UUID orderId, String newStatus);
 
-    OrderDTO getOrderById(UUID id);
+    OrderDTO getOrderById(UUID orderId);
 
-    void deleteOrderById(UUID id);
+    void deleteOrderById(UUID orderId);
 
 }

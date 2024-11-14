@@ -1,18 +1,18 @@
 type Query {
     getAllOrders: [OrderDTO]
-    getOrderById(id: String!): OrderDTO
+    getOrderById(orderId: String!): OrderDTO
 
-    getAllOrderItemsByOrderId(id: String!): [OrderItemDTO]
-    getOrderItemById(id: String!): OrderItemDTO
+    getAllOrderItemsByOrderId(orderId: String!): [OrderItemDTO]
+    getOrderItemById(orderItemId: String!): OrderItemDTO
 }
 
 type Mutation {
     createOrder(employeeId: String!, customerName: String!, customerEmail: String!): OrderDTO
     updateOrderStatus(orderId: String!, newStatus: String!): OrderDTO
-    deleteOrder(orderId: String!): Boolean
+    deleteOrderById(orderId: String!): Boolean
 
     createOrderItem(orderId: String!, partId: String!, quantity: Int): OrderItemCreationDTO
-    deleteOrderItemById(id: String!): Boolean
+    deleteOrderItemById(orderItemId: String!): Boolean
 }
 
 type OrderDTO {

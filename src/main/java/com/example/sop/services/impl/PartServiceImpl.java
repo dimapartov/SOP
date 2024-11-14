@@ -3,6 +3,7 @@ package com.example.sop.services.impl;
 import com.example.sop.models.Part;
 import com.example.sop.repositories.PartRepository;
 import com.example.sop.services.dtos.PartDTO;
+import com.example.sop.services.exceptions.PartNotFoundException;
 import com.example.sop.services.interfaces.PartService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,10 +36,10 @@ public class PartServiceImpl implements PartService {
     }
 
     @Override
-    public PartDTO changeQuantityOnStorage(UUID id, int newQuantityOnStorage) {
-        Optional<Part> targetPart = partRepository.findById(id);
+    public PartDTO changeQuantityOnStorage(UUID partId, int newQuantityOnStorage) {
+        Optional<Part> targetPart = partRepository.findById(partId);
         if (targetPart.isEmpty()) {
-            throw new RuntimeException("Part not found");
+            throw new PartNotFoundException(partId);
         }
         targetPart.get().setQuantityOnStorage(newQuantityOnStorage);
         partRepository.saveAndFlush(targetPart.get());
@@ -46,10 +47,10 @@ public class PartServiceImpl implements PartService {
     }
 
     @Override
-    public PartDTO getPartById(UUID id) {
-        Optional<Part> requestedPart = partRepository.findById(id);
+    public PartDTO getPartById(UUID partId) {
+        Optional<Part> requestedPart = partRepository.findById(partId);
         if (requestedPart.isEmpty()) {
-            throw new RuntimeException("Part not found");
+            throw new PartNotFoundException(partId);
         }
         return modelMapper.map(requestedPart, PartDTO.class);
     }
@@ -61,8 +62,12 @@ public class PartServiceImpl implements PartService {
     }
 
     @Override
-    public void deletePartById(UUID id) {
-        partRepository.deleteById(id);
+    public void deletePartById(UUID partId) {
+        Optional<Part> targetPart = partRepository.findById(partId);
+        if (targetPart.isEmpty()) {
+            throw new PartNotFoundException(partId);
+        }
+        partRepository.deleteById(partId);
     }
 
 }

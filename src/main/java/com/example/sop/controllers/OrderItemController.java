@@ -60,9 +60,9 @@ public class OrderItemController {
         return ResponseEntity.ok(orderItemsByOrderIdEntityModels);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<EntityModel<OrderItemDTO>> getOrderItemById(@PathVariable UUID id) {
-        OrderItemDTO orderItemById = orderItemService.getOrderItemById(id);
+    @GetMapping("/{orderItemId}")
+    public ResponseEntity<EntityModel<OrderItemDTO>> getOrderItemById(@PathVariable UUID orderItemId) {
+        OrderItemDTO orderItemById = orderItemService.getOrderItemById(orderItemId);
 
         EntityModel<OrderItemDTO> orderItemByIdEntityModel = EntityModel.of(orderItemById);
 
@@ -72,9 +72,9 @@ public class OrderItemController {
         return ResponseEntity.ok(orderItemByIdEntityModel);
     }
 
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<Void> deleteOrderItemById(@PathVariable UUID id) {
-        orderItemService.deleteOrderItemById(id);
+    @DeleteMapping("/delete/{orderItemId}")
+    public ResponseEntity<Void> deleteOrderItemById(@PathVariable UUID orderItemId) {
+        orderItemService.deleteOrderItemById(orderItemId);
 
         return ResponseEntity.noContent().build();
     }

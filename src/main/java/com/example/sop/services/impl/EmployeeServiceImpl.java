@@ -3,6 +3,7 @@ package com.example.sop.services.impl;
 import com.example.sop.models.Employee;
 import com.example.sop.repositories.EmployeeRepository;
 import com.example.sop.services.dtos.EmployeeDTO;
+import com.example.sop.services.exceptions.EmployeeNotFoundException;
 import com.example.sop.services.interfaces.EmployeeService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,10 +36,10 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public EmployeeDTO getEmployeeById(UUID id) {
-        Optional<Employee> requestedEmployee = employeeRepository.findById(id);
+    public EmployeeDTO getEmployeeById(UUID employeeId) {
+        Optional<Employee> requestedEmployee = employeeRepository.findById(employeeId);
         if (requestedEmployee.isEmpty()) {
-            throw new RuntimeException("Employee not found");
+            throw new EmployeeNotFoundException(employeeId);
         }
         return modelMapper.map(requestedEmployee, EmployeeDTO.class);
     }
@@ -50,8 +51,12 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public void deleteEmployeeById(UUID id) {
-        employeeRepository.deleteById(id);
+    public void deleteEmployeeById(UUID employeeId) {
+        Optional<Employee> requestedEmployee = employeeRepository.findById(employeeId);
+        if (requestedEmployee.isEmpty()) {
+            throw new EmployeeNotFoundException(employeeId);
+        }
+        employeeRepository.deleteById(employeeId);
     }
 
 }
