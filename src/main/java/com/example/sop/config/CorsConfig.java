@@ -1,3 +1,4 @@
+/*
 package com.example.sop.config;
 
 import org.springframework.context.annotation.Bean;
@@ -22,4 +23,4 @@ public class CorsConfig {
         return new CorsFilter(source);
     }
 
-}
+}*/

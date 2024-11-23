@@ -3,7 +3,7 @@ package com.example.sop.services.impl;
 import com.example.sop.models.Part;
 import com.example.sop.repositories.PartRepository;
 import com.example.sop.services.dtos.PartDTO;
-import com.example.sop.services.exceptions.PartNotFoundException;
+import com.example.sopcontracts.exceptions.PartNotFoundException;
 import com.example.sop.services.interfaces.PartService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;

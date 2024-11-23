@@ -5,7 +5,7 @@ import com.example.sop.models.Order;
 import com.example.sop.repositories.EmployeeRepository;
 import com.example.sop.repositories.OrderRepository;
 import com.example.sop.services.dtos.OrderDTO;
-import com.example.sop.services.exceptions.OrderNotFoundException;
+import com.example.sopcontracts.exceptions.OrderNotFoundException;
 import com.example.sop.services.interfaces.OrderService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
