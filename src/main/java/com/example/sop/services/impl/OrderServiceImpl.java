@@ -1,6 +1,6 @@
 package com.example.sop.services.impl;
 
-import com.example.sop.enums.OrderStatusEnum;
+import com.example.sopcontracts.enums.OrderStatusEnum;
 import com.example.sop.models.Order;
 import com.example.sop.repositories.EmployeeRepository;
 import com.example.sop.repositories.OrderRepository;

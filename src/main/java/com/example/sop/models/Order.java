@@ -1,6 +1,6 @@
 package com.example.sop.models;
 
-import com.example.sop.enums.OrderStatusEnum;
+import com.example.sopcontracts.enums.OrderStatusEnum;
 import com.example.sop.models.base.IdCreatedModified;
 import jakarta.persistence.*;
 

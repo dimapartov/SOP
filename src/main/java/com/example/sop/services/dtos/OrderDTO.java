@@ -1,6 +1,6 @@
 package com.example.sop.services.dtos;
 
-import com.example.sop.enums.OrderStatusEnum;
+import com.example.sopcontracts.enums.OrderStatusEnum;
 
 import java.util.UUID;
 

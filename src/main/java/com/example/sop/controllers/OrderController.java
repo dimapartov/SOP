@@ -3,14 +3,16 @@ package com.example.sop.controllers;
 import com.example.sop.config.RabbitMQConfiguration;
 import com.example.sop.services.dtos.OrderDTO;
 import com.example.sop.services.interfaces.OrderService;
+import com.example.sopcontracts.controllers.OrdersApi;
+import com.example.sopcontracts.dtos.OrderRequest;
+import com.example.sopcontracts.dtos.OrderResponse;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
 import java.util.UUID;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -18,15 +20,28 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 
 @RestController
-@RequestMapping("/api/orders")
-public class OrderController {
+public class OrderController implements OrdersApi {
 
     private OrderService orderService;
     private RabbitTemplate rabbitTemplate;
 
-/*
-    private RabbitMQPublisherService rabbitMQPublisherService;
-*/
+    private OrderDTO mapToOrderDTO(OrderRequest orderRequest) {
+        return new OrderDTO(
+                orderRequest.employeeId(),
+                orderRequest.customerName(),
+                orderRequest.customerEmail()
+        );
+    }
+
+    private OrderResponse mapToOrderResponse(OrderDTO orderDTO) {
+        return new OrderResponse(
+                orderDTO.getId(),
+                orderDTO.getEmployeeId(),
+                orderDTO.getCustomerName(),
+                orderDTO.getCustomerEmail(),
+                orderDTO.getOrderStatus()
+        );
+    }
 
 
     @Autowired
@@ -39,81 +54,48 @@ public class OrderController {
         this.rabbitTemplate = rabbitTemplate;
     }
 
-/*    @Autowired
-    public void setRabbitMQPublisherService(RabbitMQPublisherService rabbitMQPublisherService) {
-        this.rabbitMQPublisherService = rabbitMQPublisherService;
-    }*/
+    @Override
+    public ResponseEntity<EntityModel<OrderResponse>> createOrder(OrderRequest orderRequest) {
+        OrderDTO mappedOrderDTO = mapToOrderDTO(orderRequest);
 
+        OrderDTO createdOrder = orderService.createOrder(mappedOrderDTO);
 
-    @PostMapping("/create")
-    public ResponseEntity<EntityModel<OrderDTO>> createOrder(@RequestBody OrderDTO orderDTO) {
-        OrderDTO createdOrder = orderService.createOrder(orderDTO);
+        OrderResponse orderResponse = mapToOrderResponse(createdOrder);
 
-        rabbitTemplate.convertAndSend(RabbitMQConfiguration.EXCHANGE_NAME, "orders.create", createdOrder);
+        rabbitTemplate.convertAndSend(RabbitMQConfiguration.EXCHANGE_NAME, "orders.create", orderResponse);
 
-        EntityModel<OrderDTO> createdOrderEntityModel = EntityModel.of(createdOrder);
+        EntityModel<OrderResponse> createdOrderEntityModel = EntityModel.of(orderResponse);
 
-        createdOrderEntityModel.add(linkTo(methodOn(OrderController.class).getOrderById(createdOrder.getId())).withSelfRel());
-        createdOrderEntityModel.add(linkTo(methodOn(OrderController.class).deleteOrder(createdOrder.getId())).withRel("deleteOrder"));
+        createdOrderEntityModel.add(linkTo(methodOn(OrderController.class).getOrderById(orderResponse.id())).withSelfRel());
+        createdOrderEntityModel.add(linkTo(methodOn(OrderController.class).deleteOrder(orderResponse.id())).withRel("deleteOrder"));
         createdOrderEntityModel.add(linkTo(methodOn(OrderController.class).getAllOrders()).withRel("allOrders"));
-        createdOrderEntityModel.add(linkTo(methodOn(OrderController.class).updateOrderStatus(createdOrder.getId(), "newStatus")).withRel("updateStatus"));
+        createdOrderEntityModel.add(linkTo(methodOn(OrderController.class).updateOrderStatus(orderResponse.id(), "newStatus")).withRel("updateStatus"));
 
         return ResponseEntity.created(createdOrderEntityModel.getRequiredLink("self").toUri()).body(createdOrderEntityModel);
     }
 
-    @GetMapping("/all")
-    public ResponseEntity<CollectionModel<EntityModel<OrderDTO>>> getAllOrders() {
-        List<EntityModel<OrderDTO>> allOrdersEntityModels = orderService.getAllOrders()
-                .stream()
-                .map(order -> EntityModel.of(order,
-                        linkTo(methodOn(OrderController.class).getOrderById(order.getId())).withSelfRel(),
-                        linkTo(methodOn(OrderController.class).deleteOrder(order.getId())).withRel("deleteOrder"),
-                        linkTo(methodOn(OrderController.class).updateOrderStatus(order.getId(), "newStatus")).withRel("updateStatus"),
-                        linkTo(methodOn(OrderController.class).getAllOrders()).withRel("allOrders")))
-                .toList();
-
-        CollectionModel<EntityModel<OrderDTO>> allOrdersCollectionModel = CollectionModel.of(allOrdersEntityModels);
-
-        return ResponseEntity.ok(allOrdersCollectionModel);
+    //TODO
+    @Override
+    public ResponseEntity<CollectionModel<EntityModel<OrderResponse>>> getAllOrders() {
+        return null;
     }
 
-    @PutMapping("/update/{orderId}")
-    public ResponseEntity<EntityModel<OrderDTO>> updateOrderStatus(@PathVariable UUID orderId, @RequestParam String newStatus) {
-        OrderDTO updatedOrder = orderService.updateOrderStatus(orderId, newStatus);
-
-        rabbitTemplate.convertAndSend(RabbitMQConfiguration.EXCHANGE_NAME, "orders.update.status", updatedOrder);
-
-        EntityModel<OrderDTO> updatedOrderEntityModel = EntityModel.of(updatedOrder);
-
-        updatedOrderEntityModel.add(linkTo(methodOn(OrderController.class).getOrderById(orderId)).withSelfRel());
-        updatedOrderEntityModel.add(linkTo(methodOn(OrderController.class).getAllOrders()).withRel("allOrders"));
-        updatedOrderEntityModel.add(linkTo(methodOn(OrderController.class).deleteOrder(updatedOrder.getId())).withRel("deleteOrder"));
-
-
-        return ResponseEntity.ok(updatedOrderEntityModel);
+    //TODO
+    @Override
+    public ResponseEntity<EntityModel<OrderResponse>> getOrderById(UUID id) {
+        return null;
     }
 
-    @GetMapping("/{orderId}")
-    public ResponseEntity<EntityModel<OrderDTO>> getOrderById(@PathVariable UUID orderId) {
-        OrderDTO orderById = orderService.getOrderById(orderId);
-
-        EntityModel<OrderDTO> orderByIdEntityModel = EntityModel.of(orderById);
-
-        orderByIdEntityModel.add(linkTo(methodOn(OrderController.class).getOrderById(orderId)).withSelfRel());
-        orderByIdEntityModel.add(linkTo(methodOn(OrderController.class).getAllOrders()).withRel("allOrders"));
-        orderByIdEntityModel.add(linkTo(methodOn(OrderController.class).deleteOrder(orderById.getId())).withRel("deleteOrder"));
-        orderByIdEntityModel.add(linkTo(methodOn(OrderController.class).updateOrderStatus(orderById.getId(), "newStatus")).withRel("updateStatus"));
-
-        return ResponseEntity.ok(orderByIdEntityModel);
+    //TODO
+    @Override
+    public ResponseEntity<EntityModel<OrderResponse>> updateOrderStatus(UUID id, String newStatus) {
+        return null;
     }
 
-    @DeleteMapping("/delete/{orderId}")
-    public ResponseEntity<Void> deleteOrder(@PathVariable UUID orderId) {
-        orderService.deleteOrderById(orderId);
-
-        rabbitTemplate.convertAndSend(RabbitMQConfiguration.EXCHANGE_NAME, "orders.delete", "Successfully deleted order with order ID: " + orderId);
-
-        return ResponseEntity.noContent().build();
+    //TODO
+    @Override
+    public ResponseEntity<Boolean> deleteOrder(UUID id) {
+        return null;
     }
 
 }
