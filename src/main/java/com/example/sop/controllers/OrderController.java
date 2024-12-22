@@ -26,17 +26,6 @@ public class OrderController implements OrdersApi {
     private OrderService orderService;
     private RabbitTemplate rabbitTemplate;
 
-
-    private OrderDTO mapToOrderDTO(OrderRequest orderRequest) {
-        return new OrderDTO(orderRequest.employeeId(), orderRequest.customerName(), orderRequest.customerEmail());
-    }
-
-    private OrderResponse mapToOrderResponse(OrderDTO orderDTO) {
-        return new OrderResponse(orderDTO.getId(), orderDTO.getEmployeeId(), orderDTO.getCustomerName(),
-                orderDTO.getCustomerEmail(), orderDTO.getOrderStatus());
-    }
-
-
     @Autowired
     public void setOrderService(OrderService orderService) {
         this.orderService = orderService;
@@ -45,6 +34,16 @@ public class OrderController implements OrdersApi {
     @Autowired
     public void setRabbitTemplate(RabbitTemplate rabbitTemplate) {
         this.rabbitTemplate = rabbitTemplate;
+    }
+
+
+    private OrderDTO mapToOrderDTO(OrderRequest orderRequest) {
+        return new OrderDTO(orderRequest.employeeId(), orderRequest.customerName(), orderRequest.customerEmail());
+    }
+
+    private OrderResponse mapToOrderResponse(OrderDTO orderDTO) {
+        return new OrderResponse(orderDTO.getId(), orderDTO.getEmployeeId(), orderDTO.getCustomerName(),
+                orderDTO.getCustomerEmail(), orderDTO.getOrderStatus());
     }
 
 
@@ -61,7 +60,7 @@ public class OrderController implements OrdersApi {
         EntityModel<OrderResponse> createdOrderEntityModel = EntityModel.of(orderResponse);
 
         createdOrderEntityModel.add(linkTo(methodOn(OrderController.class).getOrderById(orderResponse.id())).withSelfRel());
-        createdOrderEntityModel.add(linkTo(methodOn(OrderController.class).deleteOrder(orderResponse.id())).withRel(
+        createdOrderEntityModel.add(linkTo(methodOn(OrderController.class).deleteOrderById(orderResponse.id())).withRel(
                 "deleteOrder"));
         createdOrderEntityModel.add(linkTo(methodOn(OrderController.class).getAllOrders()).withRel("allOrders"));
         createdOrderEntityModel.add(linkTo(methodOn(OrderController.class).updateOrderStatus(orderResponse.id(),
@@ -81,7 +80,7 @@ public class OrderController implements OrdersApi {
                     OrderResponse orderResponse = mapToOrderResponse(orderDTO);
                     return EntityModel.of(orderResponse,
                             linkTo(methodOn(OrderController.class).getOrderById(orderResponse.id())).withSelfRel(),
-                            linkTo(methodOn(OrderController.class).deleteOrder(orderResponse.id())).withRel("deleteOrder"),
+                            linkTo(methodOn(OrderController.class).deleteOrderById(orderResponse.id())).withRel("deleteOrder"),
                             linkTo(methodOn(OrderController.class).updateOrderStatus(orderResponse.id(), "newStatus")).withRel("updateStatus"),
                             linkTo(methodOn(OrderController.class).getAllOrders()).withRel("allOrders"));
                 })
@@ -103,7 +102,7 @@ public class OrderController implements OrdersApi {
 
         orderByIdEntityModel.add(linkTo(methodOn(OrderController.class).getOrderById(orderId)).withSelfRel());
         orderByIdEntityModel.add(linkTo(methodOn(OrderController.class).getAllOrders()).withRel("allOrders"));
-        orderByIdEntityModel.add(linkTo(methodOn(OrderController.class).deleteOrder(orderResponse.id())).withRel(
+        orderByIdEntityModel.add(linkTo(methodOn(OrderController.class).deleteOrderById(orderResponse.id())).withRel(
                 "deleteOrder"));
         orderByIdEntityModel.add(linkTo(methodOn(OrderController.class).updateOrderStatus(orderResponse.id(),
                 "newStatus")).withRel("updateStatus"));
@@ -123,7 +122,7 @@ public class OrderController implements OrdersApi {
 
         updatedOrderEntityModel.add(linkTo(methodOn(OrderController.class).getOrderById(orderId)).withSelfRel());
         updatedOrderEntityModel.add(linkTo(methodOn(OrderController.class).getAllOrders()).withRel("allOrders"));
-        updatedOrderEntityModel.add(linkTo(methodOn(OrderController.class).deleteOrder(orderResponse.id())).withRel(
+        updatedOrderEntityModel.add(linkTo(methodOn(OrderController.class).deleteOrderById(orderResponse.id())).withRel(
                 "deleteOrder"));
 
 
@@ -131,7 +130,7 @@ public class OrderController implements OrdersApi {
     }
 
     @Override
-    public ResponseEntity<String> deleteOrder(UUID orderId) {
+    public ResponseEntity<String> deleteOrderById(UUID orderId) {
         orderService.deleteOrderById(orderId);
 
         String deletionSucceededMessage = "Successfully deleted order with order ID: " + orderId;

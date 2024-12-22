@@ -23,7 +23,6 @@ public class OrderItemController {
 
     private OrderItemService orderItemService;
 
-
     @Autowired
     public void setOrderItemService(OrderItemService orderItemService) {
         this.orderItemService = orderItemService;

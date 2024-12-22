@@ -21,7 +21,6 @@ public class PartController {
 
     private PartService partService;
 
-
     @Autowired
     public void setPartService(PartService partService) {
         this.partService = partService;
