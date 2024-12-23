@@ -3,7 +3,7 @@ package com.example.sop.controllers;
 import com.example.sop.config.RabbitMQConfiguration;
 import com.example.sop.services.dtos.OrderDTO;
 import com.example.sop.services.interfaces.OrderService;
-import com.example.sopcontracts.controllers.OrdersApi;
+import com.example.sopcontracts.controllers.OrderApi;
 import com.example.sopcontracts.dtos.OrderRequest;
 import com.example.sopcontracts.dtos.OrderResponse;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -21,7 +21,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 
 @RestController
-public class OrderController implements OrdersApi {
+public class OrderController implements OrderApi {
 
     private OrderService orderService;
     private RabbitTemplate rabbitTemplate;
@@ -55,7 +55,7 @@ public class OrderController implements OrdersApi {
 
         OrderResponse orderResponse = mapToOrderResponse(createdOrder);
 
-        rabbitTemplate.convertAndSend(RabbitMQConfiguration.ORDERS_EXCHANGE_NAME, "orders.create", orderResponse);
+//        rabbitTemplate.convertAndSend(RabbitMQConfiguration.ORDERS_EXCHANGE_NAME, "orders.create", orderResponse);
 
         EntityModel<OrderResponse> createdOrderEntityModel = EntityModel.of(orderResponse);
 
@@ -135,7 +135,7 @@ public class OrderController implements OrdersApi {
 
         String deletionSucceededMessage = "Successfully deleted order with order ID: " + orderId;
 
-        rabbitTemplate.convertAndSend(RabbitMQConfiguration.ORDERS_EXCHANGE_NAME, "orders.delete", deletionSucceededMessage);
+//        rabbitTemplate.convertAndSend(RabbitMQConfiguration.ORDERS_EXCHANGE_NAME, "orders.delete", deletionSucceededMessage);
 
         return ResponseEntity.ok(deletionSucceededMessage);
     }

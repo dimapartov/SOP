@@ -2,7 +2,7 @@ package com.example.sop.controllers;
 
 import com.example.sop.services.dtos.EmployeeDTO;
 import com.example.sop.services.interfaces.EmployeeService;
-import com.example.sopcontracts.controllers.EmployeesApi;
+import com.example.sopcontracts.controllers.EmployeeApi;
 import com.example.sopcontracts.dtos.EmployeeRequest;
 import com.example.sopcontracts.dtos.EmployeeResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +17,7 @@ import java.util.UUID;
 
 
 @RestController
-public class EmployeeController implements EmployeesApi {
+public class EmployeeController implements EmployeeApi {
 
     private EmployeeService employeeService;
 

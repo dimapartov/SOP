@@ -35,15 +35,21 @@ public class OrderItemDataFetcher {
     }
 
     @DgsMutation
-    public OrderItemCreationDTO createOrderItem(String orderId, String partId, int quantity) {
-        OrderItemCreationDTO newOrderItem = new OrderItemCreationDTO();
+    public OrderItemDTO createOrderItem(String orderId, String partId, int quantity) {
+        // Создаем DTO для передачи в сервис
+        OrderItemCreationDTO newOrderItem = new OrderItemCreationDTO(
+                UUID.fromString(orderId),
+                UUID.fromString(partId),
+                quantity
+        );
 
-        newOrderItem.setOrderId(UUID.fromString(orderId));
-        newOrderItem.setPartId(UUID.fromString(partId));
-        newOrderItem.setQuantity(quantity);
+        // Сервис возвращает полностью заполненный OrderItemDTO
+        OrderItemDTO createdOrderItem = orderItemService.createOrderItem(newOrderItem);
 
-        return orderItemService.createOrderItem(newOrderItem);
+        // Возвращаем готовый DTO для GraphQL
+        return createdOrderItem;
     }
+
 
     @DgsMutation
     public Boolean deleteOrderItemById(String orderItemId) {

@@ -11,7 +11,7 @@ type Mutation {
     updateOrderStatus(orderId: String!, newStatus: String!): OrderDTO
     deleteOrderById(orderId: String!): Boolean
 
-    createOrderItem(orderId: String!, partId: String!, quantity: Int): OrderItemCreationDTO
+    createOrderItem(orderId: String!, partId: String!, quantity: Int): OrderItemDTO
     deleteOrderItemById(orderItemId: String!): Boolean
 }
 

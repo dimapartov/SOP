@@ -1,19 +1,11 @@
 package com.example.sop;
 
-import com.example.sop.repositories.EmployeeRepository;
-import com.example.sop.repositories.OrderItemRepository;
-import com.example.sop.repositories.OrderRepository;
-import com.example.sop.repositories.PartRepository;
-import com.example.sop.services.dtos.EmployeeDTO;
-import com.example.sop.services.dtos.OrderDTO;
-import com.example.sop.services.dtos.OrderItemCreationDTO;
-import com.example.sop.services.dtos.PartDTO;
+import com.example.sop.services.dtos.*;
 import com.example.sop.services.interfaces.EmployeeService;
 import com.example.sop.services.interfaces.OrderItemService;
 import com.example.sop.services.interfaces.OrderService;
 import com.example.sop.services.interfaces.PartService;
 import com.github.javafaker.Faker;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -102,12 +94,8 @@ public class DataInit implements CommandLineRunner {
         }
         List<OrderDTO> allOrders = orderService.getAllOrders();
 
-        // Existing Order Items
-        OrderItemCreationDTO orderItem1 = new OrderItemCreationDTO(allOrders.get(0).getId(), allParts.get(0).getId(), 11);
-        orderItemService.createOrderItem(orderItem1);
-
         // Generate additional Order Items
-        for (int i = 0; i < 9; i++) {
+        for (int i = 0; i < 10; i++) {
             UUID randomOrderId = allOrders.get(ThreadLocalRandom.current().nextInt(allOrders.size())).getId();
             UUID randomPartId = allParts.get(ThreadLocalRandom.current().nextInt(allParts.size())).getId();
             OrderItemCreationDTO orderItem = new OrderItemCreationDTO(
@@ -115,6 +103,8 @@ public class DataInit implements CommandLineRunner {
                     randomPartId,
                     ThreadLocalRandom.current().nextInt(1, 50)
             );
+
+            // Используем возвращаемое значение OrderItemDTO
             orderItemService.createOrderItem(orderItem);
         }
     }
