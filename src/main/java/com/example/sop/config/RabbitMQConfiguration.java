@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RabbitMQConfiguration {
 
-    public static final String EXCHANGE_NAME = "ordersExchange";
+    public static final String ORDERS_EXCHANGE_NAME = "ordersExchange";
     public static final String ORDERS_QUEUE_NAME = "ordersQueue";
 
 
@@ -31,7 +31,7 @@ public class RabbitMQConfiguration {
 
     @Bean
     public TopicExchange ordersExchange() {
-        return new TopicExchange(EXCHANGE_NAME);
+        return new TopicExchange(ORDERS_EXCHANGE_NAME);
     }
 
 

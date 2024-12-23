@@ -55,7 +55,7 @@ public class OrderController implements OrdersApi {
 
         OrderResponse orderResponse = mapToOrderResponse(createdOrder);
 
-        rabbitTemplate.convertAndSend(RabbitMQConfiguration.EXCHANGE_NAME, "orders.create", orderResponse);
+        rabbitTemplate.convertAndSend(RabbitMQConfiguration.ORDERS_EXCHANGE_NAME, "orders.create", orderResponse);
 
         EntityModel<OrderResponse> createdOrderEntityModel = EntityModel.of(orderResponse);
 
@@ -116,7 +116,7 @@ public class OrderController implements OrdersApi {
 
         OrderResponse orderResponse = mapToOrderResponse(updatedOrder);
 
-        rabbitTemplate.convertAndSend(RabbitMQConfiguration.EXCHANGE_NAME, "orders.update.status", orderResponse);
+        rabbitTemplate.convertAndSend(RabbitMQConfiguration.ORDERS_EXCHANGE_NAME, "orders.update.status", orderResponse);
 
         EntityModel<OrderResponse> updatedOrderEntityModel = EntityModel.of(orderResponse);
 
@@ -135,7 +135,7 @@ public class OrderController implements OrdersApi {
 
         String deletionSucceededMessage = "Successfully deleted order with order ID: " + orderId;
 
-        rabbitTemplate.convertAndSend(RabbitMQConfiguration.EXCHANGE_NAME, "orders.delete", deletionSucceededMessage);
+        rabbitTemplate.convertAndSend(RabbitMQConfiguration.ORDERS_EXCHANGE_NAME, "orders.delete", deletionSucceededMessage);
 
         return ResponseEntity.ok(deletionSucceededMessage);
     }
