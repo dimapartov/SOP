@@ -1,5 +1,6 @@
 package com.example.sop.services.impl;
 
+import com.example.sop.grpc.OrderPartValidationClient;
 import com.example.sop.models.Order;
 import com.example.sop.models.OrderItem;
 import com.example.sop.models.Part;
@@ -8,8 +9,8 @@ import com.example.sop.repositories.OrderRepository;
 import com.example.sop.repositories.PartRepository;
 import com.example.sop.services.dtos.OrderItemCreationDTO;
 import com.example.sop.services.dtos.OrderItemDTO;
-import com.example.sopcontracts.exceptions.OrderItemNotFoundException;
 import com.example.sop.services.interfaces.OrderItemService;
+import com.example.sopcontracts.exceptions.OrderItemNotFoundException;
 import com.example.sopcontracts.exceptions.OrderNotFoundException;
 import com.example.sopcontracts.exceptions.PartNotFoundException;
 import org.modelmapper.ModelMapper;
@@ -28,43 +29,46 @@ public class OrderItemServiceImpl implements OrderItemService {
     private OrderItemRepository orderItemRepository;
     private OrderRepository orderRepository;
     private PartRepository partRepository;
+    private OrderPartValidationClient orderPartValidationClient;
 
 
     @Autowired
-    public OrderItemServiceImpl(ModelMapper modelMapper, OrderItemRepository orderItemRepository, OrderRepository orderRepository, PartRepository partRepository) {
+    public OrderItemServiceImpl(ModelMapper modelMapper,
+                                OrderItemRepository orderItemRepository,
+                                OrderRepository orderRepository,
+                                PartRepository partRepository,
+                                OrderPartValidationClient orderPartValidationClient) {
         this.modelMapper = modelMapper;
         this.orderItemRepository = orderItemRepository;
         this.orderRepository = orderRepository;
         this.partRepository = partRepository;
+        this.orderPartValidationClient = orderPartValidationClient;
     }
 
 
     @Override
     public OrderItemDTO createOrderItem(OrderItemCreationDTO orderItemCreationDTO) {
-        // Преобразуем DTO в сущность OrderItem
+        Part part = partRepository.findById(orderItemCreationDTO.getPartId())
+                .orElseThrow(() -> new PartNotFoundException(orderItemCreationDTO.getPartId()));
+
+        // Validate Part using gRPC
+        orderPartValidationClient.validatePart(orderItemCreationDTO.getPartId().toString(), orderItemCreationDTO.getQuantity());
+
+        // Proceed with normal creation logic
         OrderItem orderItem = modelMapper.map(orderItemCreationDTO, OrderItem.class);
 
-        // Проверяем, существует ли связанный заказ
         Order order = orderRepository.findById(orderItemCreationDTO.getOrderId())
                 .orElseThrow(() -> new OrderNotFoundException(orderItemCreationDTO.getOrderId()));
 
-        // Присваиваем заказ сущности
         orderItem.setOrder(order);
-
-        // Пример: если нужна связь с другой сущностью (Part)
-        // Извлекаем Part и добавляем в OrderItem
-        Part part = partRepository.findById(orderItemCreationDTO.getPartId())
-                .orElseThrow(() -> new PartNotFoundException(orderItemCreationDTO.getPartId()));
         orderItem.setPart(part);
 
-        // Сохраняем OrderItem
         orderItemRepository.saveAndFlush(orderItem);
 
-        // Преобразуем сущность OrderItem обратно в DTO. При этом
-        // вложенные объекты (Order и Part) тоже преобразуются в DTO
+        part.setQuantityOnStorage(part.getQuantityOnStorage() - orderItem.getQuantity());
+
         return modelMapper.map(orderItem, OrderItemDTO.class);
     }
-
 
     @Override
     public List<OrderItemDTO> getAllOrderItemsByOrderId(UUID orderId) {
