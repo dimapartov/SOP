@@ -66,6 +66,7 @@ public class OrderItemServiceImpl implements OrderItemService {
         orderItemRepository.saveAndFlush(orderItem);
 
         part.setQuantityOnStorage(part.getQuantityOnStorage() - orderItem.getQuantity());
+        partRepository.saveAndFlush(part);
 
         return modelMapper.map(orderItem, OrderItemDTO.class);
     }
