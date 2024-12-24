@@ -51,10 +51,8 @@ public class OrderItemServiceImpl implements OrderItemService {
         Part part = partRepository.findById(orderItemCreationDTO.getPartId())
                 .orElseThrow(() -> new PartNotFoundException(orderItemCreationDTO.getPartId()));
 
-        // Validate Part using gRPC
         orderPartValidationClient.validatePart(orderItemCreationDTO.getPartId().toString(), orderItemCreationDTO.getQuantity());
 
-        // Proceed with normal creation logic
         OrderItem orderItem = modelMapper.map(orderItemCreationDTO, OrderItem.class);
 
         Order order = orderRepository.findById(orderItemCreationDTO.getOrderId())

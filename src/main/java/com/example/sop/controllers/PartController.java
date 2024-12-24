@@ -28,7 +28,6 @@ public class PartController implements PartApi {
         this.partService = partService;
     }
 
-    // --- Utility methods for mapping ---
     private PartDTO mapToPartDTO(PartRequest partRequest) {
         return new PartDTO(partRequest.name(), partRequest.quantityOnStorage(), partRequest.price());
     }
@@ -37,14 +36,11 @@ public class PartController implements PartApi {
         return new PartResponse(partDTO.getId(), partDTO.getName(), partDTO.getQuantityOnStorage(), partDTO.getPrice());
     }
 
-    // --- API Implementations ---
 
     @Override
     public ResponseEntity<EntityModel<PartResponse>> createPart(PartRequest partRequest) {
-        // Map PartRequest to PartDTO and create part
         PartDTO createdPart = partService.createPart(mapToPartDTO(partRequest));
 
-        // Convert to PartResponse and wrap in EntityModel with HATEOAS links
         PartResponse partResponse = mapToPartResponse(createdPart);
         EntityModel<PartResponse> createdPartEntity = EntityModel.of(partResponse);
         createdPartEntity.add(linkTo(methodOn(PartController.class).getPartById(partResponse.id())).withSelfRel());
@@ -57,10 +53,8 @@ public class PartController implements PartApi {
 
     @Override
     public ResponseEntity<EntityModel<PartResponse>> changeQuantityOnStorage(UUID partId, int newQuantityOnStorage) {
-        // Update quantity on storage
         PartDTO updatedPart = partService.changeQuantityOnStorage(partId, newQuantityOnStorage);
 
-        // Convert to PartResponse and wrap in EntityModel with HATEOAS links
         PartResponse partResponse = mapToPartResponse(updatedPart);
         EntityModel<PartResponse> updatedPartEntity = EntityModel.of(partResponse);
         updatedPartEntity.add(linkTo(methodOn(PartController.class).getPartById(partId)).withSelfRel());
@@ -73,10 +67,8 @@ public class PartController implements PartApi {
 
     @Override
     public ResponseEntity<EntityModel<PartResponse>> getPartById(UUID partId) {
-        // Retrieve part by id
         PartDTO partDTO = partService.getPartById(partId);
 
-        // Convert to PartResponse and wrap in EntityModel with HATEOAS links
         PartResponse partResponse = mapToPartResponse(partDTO);
         EntityModel<PartResponse> partResponseEntity = EntityModel.of(partResponse);
         partResponseEntity.add(linkTo(methodOn(PartController.class).getPartById(partId)).withSelfRel());
@@ -89,7 +81,6 @@ public class PartController implements PartApi {
 
     @Override
     public ResponseEntity<CollectionModel<EntityModel<PartResponse>>> getAllParts() {
-        // Retrieve all parts
         List<EntityModel<PartResponse>> partResponseCollection = partService.getAllParts().stream()
                 .map(partDTO -> {
                     PartResponse partResponse = mapToPartResponse(partDTO);
@@ -105,11 +96,9 @@ public class PartController implements PartApi {
 
     @Override
     public ResponseEntity<String> deletePartById(UUID partId) {
-        // Delete part by id
         partService.deletePartById(partId);
         String deletionSucceededMessage = "Successfully deleted part with ID: " + partId;
 
-        // Return confirmation response
         return ResponseEntity.ok(deletionSucceededMessage);
     }
 

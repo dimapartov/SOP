@@ -55,7 +55,6 @@ public class OrderController implements OrderApi {
 
         OrderResponse orderResponse = mapToOrderResponse(createdOrder);
 
-//        rabbitTemplate.convertAndSend(RabbitMQConfiguration.ORDERS_EXCHANGE_NAME, "orders.create", orderResponse);
 
         EntityModel<OrderResponse> createdOrderEntityModel = EntityModel.of(orderResponse);
 
@@ -71,10 +70,8 @@ public class OrderController implements OrderApi {
 
     @Override
     public ResponseEntity<CollectionModel<EntityModel<OrderResponse>>> getAllOrders() {
-        // Получаем список заказов из сервиса
         List<OrderDTO> orderDTOs = orderService.getAllOrders();
 
-        // Преобразуем OrderDTO в OrderResponse и оборачиваем в EntityModel
         List<EntityModel<OrderResponse>> orderResponses = orderDTOs.stream()
                 .map(orderDTO -> {
                     OrderResponse orderResponse = mapToOrderResponse(orderDTO);
@@ -86,7 +83,6 @@ public class OrderController implements OrderApi {
                 })
                 .toList();
 
-        // Оборачиваем список в CollectionModel для HATEOAS
         CollectionModel<EntityModel<OrderResponse>> allOrdersCollectionModel = CollectionModel.of(orderResponses);
 
         return ResponseEntity.ok(allOrdersCollectionModel);
@@ -135,7 +131,6 @@ public class OrderController implements OrderApi {
 
         String deletionSucceededMessage = "Successfully deleted order with order ID: " + orderId;
 
-//        rabbitTemplate.convertAndSend(RabbitMQConfiguration.ORDERS_EXCHANGE_NAME, "orders.delete", deletionSucceededMessage);
 
         return ResponseEntity.ok(deletionSucceededMessage);
     }

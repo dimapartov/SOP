@@ -38,7 +38,6 @@ public class OrderItemController implements OrderItemApi {
         this.rabbitTemplate = rabbitTemplate;
     }
 
-    // --- Utility methods for DTO mapping ---
     private OrderItemCreationDTO mapToOrderItemCreationDTO(OrderItemRequest orderItemRequest) {
         return new OrderItemCreationDTO(orderItemRequest.orderId(), orderItemRequest.partId(), orderItemRequest.quantity());
     }
@@ -63,37 +62,29 @@ public class OrderItemController implements OrderItemApi {
         );
     }
 
-    // --- Implemented API Methods ---
 
-    // Create an Order Item
     @Override
     public ResponseEntity<EntityModel<OrderItemResponse>> createOrderItem(OrderItemRequest orderItemRequest) {
         // Преобразуем запрос в DTO для передачи в сервис
         OrderItemCreationDTO orderItemCreationDTO = mapToOrderItemCreationDTO(orderItemRequest);
 
-        // Создаем OrderItem через сервис и получаем полностью заполненный OrderItemDTO
         OrderItemDTO createdOrderItem = orderItemService.createOrderItem(orderItemCreationDTO);
 
-        // Преобразуем OrderItemDTO в OrderItemResponse
         OrderItemResponse orderItemResponse = mapToOrderItemResponse(createdOrderItem);
 
-        // Оборачиваем ответ в формат HATEOAS
         EntityModel<OrderItemResponse> createdOrderItemEntity = EntityModel.of(orderItemResponse);
         createdOrderItemEntity.add(linkTo(methodOn(OrderItemController.class).getOrderItemById(orderItemResponse.id())).withSelfRel());
         createdOrderItemEntity.add(linkTo(methodOn(OrderItemController.class).getAllOrderItemsByOrderId(orderItemRequest.orderId())).withRel("allOrderItems"));
         createdOrderItemEntity.add(linkTo(methodOn(OrderItemController.class).deleteOrderItemById(orderItemResponse.id())).withRel("deleteOrderItem"));
 
-        // Возвращаем ответ с HATEOAS ссылками и статусом CREATED
         return ResponseEntity.created(createdOrderItemEntity.getRequiredLink("self").toUri()).body(createdOrderItemEntity);
     }
 
 
-    // Retrieve all Order Items by Order ID
     @Override
     public ResponseEntity<CollectionModel<EntityModel<OrderItemResponse>>> getAllOrderItemsByOrderId(UUID orderId) {
         List<OrderItemDTO> orderItemDTOs = orderItemService.getAllOrderItemsByOrderId(orderId);
 
-        // Map results to a HATEOAS-enabled collection
         List<EntityModel<OrderItemResponse>> orderItems = orderItemDTOs.stream()
                 .map(orderItem -> {
                     OrderItemResponse orderItemResponse = mapToOrderItemResponse(orderItem);
@@ -106,7 +97,6 @@ public class OrderItemController implements OrderItemApi {
         return ResponseEntity.ok(CollectionModel.of(orderItems));
     }
 
-    // Retrieve a specific Order Item by ID
     @Override
     public ResponseEntity<EntityModel<OrderItemResponse>> getOrderItemById(UUID orderItemId) {
         OrderItemDTO orderItemDTO = orderItemService.getOrderItemById(orderItemId);
@@ -120,7 +110,6 @@ public class OrderItemController implements OrderItemApi {
         return ResponseEntity.ok(responseEntity);
     }
 
-    // Delete an Order Item by ID
     @Override
     public ResponseEntity<String> deleteOrderItemById(UUID orderItemId) {
         orderItemService.deleteOrderItemById(orderItemId);
